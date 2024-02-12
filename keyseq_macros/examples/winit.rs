@@ -10,7 +10,7 @@ use winit::{
     platform::modifier_supplement::KeyEventExtModifierSupplement,
     window::{Window, WindowBuilder},
 };
-use keyseq_macro::{key, keyseq};
+use keyseq_macros::{key, keyseq};
 
 #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
 fn main() {

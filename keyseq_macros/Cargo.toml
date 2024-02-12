@@ -1,5 +1,5 @@
 [package]
-name = "keyseq_macro"
+name = "keyseq_macros"
 description = "Short-hand notation for key chords, e.g., ctrl-A"
 version = "0.1.0"
 edition = "2021"
@@ -19,7 +19,7 @@ categories = [
 ]
 readme = "README.md"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/shanecelis/bevy_keyseq_macro"
+repository = "https://github.com/shanecelis/keyseq"
 
 [lib]
 proc-macro = true

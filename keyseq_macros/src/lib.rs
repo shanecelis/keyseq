@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/keyseq_macro/0.1.0")]
+#![doc(html_root_url = "https://docs.rs/keyseq_macros/0.1.0")]
 #![doc = include_str!("../README.md")]
 extern crate proc_macro;
 use proc_macro2::{Delimiter, Group, Ident, Punct, Spacing, TokenStream, TokenTree, Span, Literal};
@@ -18,7 +18,7 @@ mod bevy;
 /// Specify a key and any modifiers.
 ///
 /// ```
-/// # use keyseq_macro::pkey;
+/// # use keyseq_macros::pkey;
 /// assert_eq!(pkey!(A), (0, "A"));
 /// assert_eq!(pkey!(shift-A), (1, "A"));
 /// assert_eq!(pkey!(ctrl-A), (2, "A"));
@@ -41,7 +41,7 @@ mod bevy;
 ///
 #[cfg_attr(feature = "bevy", doc = r##"
 ```compile_fail
-use keyseq_macro::bevy_pkey as pkey;
+use keyseq_macros::bevy_pkey as pkey;
 use bevy::prelude::KeyCode;
 let (mods, key) = pkey!(alt-NoSuchKey); // KeyCode::NoSuchKey does not exist.
 ```
@@ -62,7 +62,7 @@ pub fn pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
 #[cfg_attr(feature = "bevy", doc = r##"
 ```
-use keyseq_macro::bevy_pkey as pkey;
+use keyseq_macros::bevy_pkey as pkey;
 use bevy::prelude::KeyCode;
 assert_eq!(pkey!(A), (0, KeyCode::A));
 assert_eq!(pkey!(shift-A), (1, KeyCode::A));
@@ -94,7 +94,7 @@ pub fn bevy_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// [keycode]: https://docs.rs/winit/latest/winit/keyboard/enum.KeyCode.html
 #[cfg_attr(feature = "winit", doc = r##"
 ```
-use keyseq_macro::winit_pkey as pkey;
+use keyseq_macros::winit_pkey as pkey;
 use winit::keyboard::{ModifiersState, KeyCode};
 assert_eq!(pkey!(A), (ModifiersState::empty(), KeyCode::KeyA));
 ```
@@ -116,7 +116,7 @@ pub fn winit_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// Specify a key and any modifiers.
 ///
 /// ```
-/// # use keyseq_macro::key;
+/// # use keyseq_macros::key;
 /// assert_eq!(key!(a), (0, "a"));
 /// assert_eq!(key!(A), (0, "A"));
 /// assert_eq!(key!(shift-A), (1, "A"));
@@ -152,7 +152,7 @@ pub fn key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// [key]: https://docs.rs/winit/latest/winit/keyboard/enum.Key.html
 #[cfg_attr(feature = "winit", doc = r##"
 ```
-use keyseq_macro::winit_key as key;
+use keyseq_macros::winit_key as key;
 use winit::keyboard::{ModifiersState, Key};
 assert_eq!(key!(a), (ModifiersState::empty(), Key::Character('a')));
 assert_eq!(key!(A), (ModifiersState::empty(), Key::Character('A')));
@@ -167,7 +167,7 @@ assert_eq!(key!(!), (ModifiersState::empty(), Key::Character('!')));
 ```
 
 ```
-use keyseq_macro::winit_pkey as pkey;
+use keyseq_macros::winit_pkey as pkey;
 use winit::keyboard::{ModifiersState, KeyCode};
 assert_eq!(pkey!(A), (ModifiersState::empty(), KeyCode::KeyA));
 ```
@@ -176,7 +176,7 @@ assert_eq!(pkey!(A), (ModifiersState::empty(), KeyCode::KeyA));
 
 #[cfg_attr(feature = "winit", doc = r##"
 ```
-use keyseq_macro::winit_key as key;
+use keyseq_macros::winit_key as key;
 use winit::keyboard::{ModifiersState, Key};
 assert_eq!(key!(;), (ModifiersState::empty(), Key::Character(';')));
 assert_eq!(key!(ctrl-;), (ModifiersState::CONTROL, Key::Character(';')));
@@ -186,7 +186,7 @@ This does have a limitation though because the macro does not do reverse look
 ups from character to name.
 
 ```compile_fail
-# use keyseq_macro::winit_key as key;
+# use keyseq_macros::winit_key as key;
 use winit::keyboard::{ModifiersState, Key};
 assert_eq!(key!(ctrl-Semicolon), (ModifiersState::CONTROL, Key::Character(';')));
 ```
@@ -218,7 +218,7 @@ pub fn winit_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 ///
 ///
 /// ```
-/// use keyseq_macro::keyseq;
+/// use keyseq_macros::keyseq;
 /// assert_eq!(keyseq!(A B), [(0, "A"), (0, "B")]);
 /// assert_eq!(keyseq!(shift-A ctrl-B), [(1, "A"), (2, "B")]);
 /// ```
@@ -227,7 +227,7 @@ pub fn winit_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// or not.
 ///
 /// ```
-/// # use keyseq_macro::keyseq;
+/// # use keyseq_macros::keyseq;
 /// assert_eq!(keyseq!(A NoSuchKey), [(0, "A"), (0, "NoSuchKey")]);
 /// ```
 ///
