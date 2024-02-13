@@ -1,2 +1,3 @@
 /target
-/keyseq_macros/Cargo.lock
+/macros/target
+Cargo.lock

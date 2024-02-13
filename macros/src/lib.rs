@@ -241,6 +241,16 @@ pub fn keyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     .into()
 }
 
+#[proc_macro_error]
+#[proc_macro]
+pub fn pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let keys = read_key_chords(input.into(), modifiers_id, get_pkey);
+    quote! {
+        [#(#keys),*]
+    }
+    .into()
+}
+
 /// Short hand notation describes a sequence of physical key chord as `[(modifiers:
 /// u8, key: `[bevy::prelude::KeyCode][keycode]`)]`.
 ///
