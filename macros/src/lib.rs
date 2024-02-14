@@ -49,7 +49,7 @@ let (mods, key) = pkey!(alt-NoSuchKey); // KeyCode::NoSuchKey does not exist.
 #[proc_macro_error]
 #[proc_macro]
 pub fn pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let (result, leftover) = read_key_chord(input.into(), modifiers_id, get_pkey);
+    let (result, leftover) = read_key_chord(input.into(), to_modifiers_u8, get_pkey);
     if !leftover.is_empty() {
         abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
     }
@@ -80,7 +80,7 @@ assert_eq!(pkey!(alt-1), (4, KeyCode::Key1));
 #[proc_macro_error]
 #[proc_macro]
 pub fn bevy_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let (result, leftover) = read_key_chord(input.into(), modifiers_id, bevy::get_pkey);
+    let (result, leftover) = read_key_chord(input.into(), to_modifiers_u8, bevy::get_pkey);
     if !leftover.is_empty() {
         abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
     }
@@ -103,7 +103,7 @@ assert_eq!(pkey!(A), (ModifiersState::empty(), KeyCode::KeyA));
 #[proc_macro_error]
 #[proc_macro]
 pub fn winit_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let (result, leftover) = read_key_chord(input.into(), winit::modifiers_id, winit::get_pkey);
+    let (result, leftover) = read_key_chord(input.into(), winit::to_modifiers, winit::get_pkey);
     if !leftover.is_empty() {
         abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
     }
@@ -138,7 +138,7 @@ pub fn winit_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 #[proc_macro_error]
 #[proc_macro]
 pub fn key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let (result, leftover) = read_key_chord(input.into(), modifiers_id, get_key);
+    let (result, leftover) = read_key_chord(input.into(), to_modifiers_u8, get_key);
     if !leftover.is_empty() {
         abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
     }
@@ -195,7 +195,7 @@ assert_eq!(key!(ctrl-Semicolon), (ModifiersState::CONTROL, Key::Character(';')))
 #[proc_macro_error]
 #[proc_macro]
 pub fn winit_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let (result, leftover) = read_key_chord(input.into(), winit::modifiers_id, winit::get_key);
+    let (result, leftover) = read_key_chord(input.into(), winit::to_modifiers, winit::get_key);
     if !leftover.is_empty() {
         abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
     }
@@ -206,7 +206,7 @@ pub fn winit_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 // #[proc_macro_error]
 // #[proc_macro]
 // pub fn bevy_lkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-//     let (result, leftover) = read_key_chord(input.into(), bevy::modifiers_id, bevy::get_key);
+//     let (result, leftover) = read_key_chord(input.into(), bevy::to_modifiers, bevy::get_key);
 //     if !leftover.is_empty() {
 //         abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
 //     }
@@ -234,7 +234,7 @@ pub fn winit_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 #[proc_macro_error]
 #[proc_macro]
 pub fn keyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let keys = read_key_chords(input.into(), modifiers_id, get_key);
+    let keys = read_key_chords(input.into(), to_modifiers_u8, get_key);
     quote! {
         [#(#keys),*]
     }
@@ -244,7 +244,7 @@ pub fn keyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 #[proc_macro_error]
 #[proc_macro]
 pub fn pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let keys = read_key_chords(input.into(), modifiers_id, get_pkey);
+    let keys = read_key_chords(input.into(), to_modifiers_u8, get_pkey);
     quote! {
         [#(#keys),*]
     }
@@ -259,7 +259,7 @@ pub fn pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 #[proc_macro_error]
 #[proc_macro]
 pub fn bevy_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let keys = read_key_chords(input.into(), modifiers_id, bevy::get_pkey);
+    let keys = read_key_chords(input.into(), to_modifiers_u8, bevy::get_pkey);
     quote! {
         [#(#keys),*]
     }
@@ -275,7 +275,7 @@ pub fn bevy_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 #[proc_macro_error]
 #[proc_macro]
 pub fn winit_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let keys = read_key_chords(input.into(), winit::modifiers_id, winit::get_pkey);
+    let keys = read_key_chords(input.into(), winit::to_modifiers, winit::get_pkey);
     quote! {
         [#(#keys),*]
     }
@@ -291,14 +291,14 @@ pub fn winit_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 #[proc_macro_error]
 #[proc_macro]
 pub fn winit_keyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let keys = read_key_chords(input.into(), winit::modifiers_id, winit::get_key);
+    let keys = read_key_chords(input.into(), winit::to_modifiers, winit::get_key);
     quote! {
         [#(#keys),*]
     }
     .into()
 }
 
-fn read_key_chords<F,G>(input: TokenStream, modifiers_id: F, get_key: G) -> Vec<TokenStream>
+fn read_key_chords<F,G>(input: TokenStream, to_modifiers: F, get_key: G) -> Vec<TokenStream>
     where F: Fn(Modifier) -> TokenStream,
     G: Fn(TokenTree) -> Option<TokenStream>
 {
@@ -306,7 +306,7 @@ fn read_key_chords<F,G>(input: TokenStream, modifiers_id: F, get_key: G) -> Vec<
     let mut keys = vec![];
 
     loop {
-        let (result, leftover) = read_key_chord(input, &modifiers_id, &get_key);
+        let (result, leftover) = read_key_chord(input, &to_modifiers, &get_key);
         keys.push(result);
         if leftover.is_empty() {
             break;
@@ -411,12 +411,16 @@ impl Modifier {
     }
 }
 
+fn to_keyseq_modifiers(modifier: Modifier) -> TokenStream {
+    let token = modifier.to_tokens();
+    quote! { ::keyseq::Modifiers::#token }
+}
+
 #[allow(unused_variables)]
-fn modifiers_id(modifier: Modifier) -> TokenStream {
+fn to_modifiers_u8(modifier: Modifier) -> TokenStream {
     let mut number = modifier as u8;
     if number != 0 {
         number = 1 << (number - 1);
-
         // This is the bitflag scheme that winit's ModifiersState uses:
         // number = 1 << (number - 1) * 3;
     }
@@ -469,7 +473,7 @@ fn get_key_raw(tree: TokenTree) -> Option<Result<char, Cow<'static, str>>> {
     }
 }
 
-fn read_modifiers<F: Fn(Modifier) -> TokenStream>(input: TokenStream, modifiers_id: F) -> (TokenStream, TokenStream) {
+fn read_modifiers<F: Fn(Modifier) -> TokenStream>(input: TokenStream, to_modifiers: F) -> (TokenStream, TokenStream) {
     let mut r = TokenStream::new();
     let mut i = input.into_iter().peekable();
     let mut last_tree = None;
@@ -490,19 +494,19 @@ fn read_modifiers<F: Fn(Modifier) -> TokenStream>(input: TokenStream, modifiers_
                 TokenTree::Ident(ref ident) => match ident.span().source_text().unwrap().as_str() {
                     "shift" => Some(TokenTree::Group(Group::new(
                         Delimiter::None,
-                        modifiers_id(Modifier::Shift),
+                        to_modifiers(Modifier::Shift),
                     ))),
                     "ctrl" => Some(TokenTree::Group(Group::new(
                         Delimiter::None,
-                        modifiers_id(Modifier::Control),
+                        to_modifiers(Modifier::Control),
                     ))),
                     "alt" => Some(TokenTree::Group(Group::new(
                         Delimiter::None,
-                        modifiers_id(Modifier::Alt),
+                        to_modifiers(Modifier::Alt),
                     ))),
                     "super" => Some(TokenTree::Group(Group::new(
                         Delimiter::None,
-                        modifiers_id(Modifier::Super),
+                        to_modifiers(Modifier::Super),
                     ))),
                     _ => None,
                 },
@@ -521,7 +525,7 @@ fn read_modifiers<F: Fn(Modifier) -> TokenStream>(input: TokenStream, modifiers_
     //    ctrl-alt-EMPTY -> Control | Alt | EMPTY.
     //
     //  And it will provide a valid Modifier when none have been provided.
-    r.extend([modifiers_id(Modifier::None)]);
+    r.extend([to_modifiers(Modifier::None)]);
     (
         r,
         TokenStream::from_iter(last_tree.into_iter().chain(i)),
@@ -531,7 +535,8 @@ fn read_modifiers<F: Fn(Modifier) -> TokenStream>(input: TokenStream, modifiers_
 fn read_key<F: Fn(TokenTree) -> Option<TokenStream>>(input: TokenStream, get_key: F) -> (TokenStream, TokenStream) {
     let mut i = input.into_iter();
     let tree = i.next().expect("No token tree");
-    let key = get_key(tree).expect("No logical key found");
+    // eprintln!("tree {:?}", &tree);
+    let key = get_key(tree).expect("No key found");
     (
         quote! {
             #key
@@ -540,11 +545,11 @@ fn read_key<F: Fn(TokenTree) -> Option<TokenStream>>(input: TokenStream, get_key
     )
 }
 
-fn read_key_chord<F,G>(input: TokenStream, modifiers_id: F, get_key: G) -> (TokenStream, TokenStream)
+fn read_key_chord<F,G>(input: TokenStream, to_modifiers: F, get_key: G) -> (TokenStream, TokenStream)
     where F:Fn(Modifier) -> TokenStream,
     G: Fn(TokenTree) -> Option<TokenStream>
 {
-    let (mods, input) = read_modifiers(input, modifiers_id);
+    let (mods, input) = read_modifiers(input, to_modifiers);
     let (key, rest) = read_key(input, get_key);
     (
         quote! {

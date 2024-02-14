@@ -1,6 +1,4 @@
 use bitflags::bitflags;
-#[cfg(feature = "bevy")]
-use ::bevy::input::{Input, keyboard::{KeyCode}};
 
 pub use keyseq_macros::{key,
                         keyseq,
@@ -23,46 +21,14 @@ bitflags! {
     }
 }
 
-#[cfg(feature = "bevy")]
-impl Modifiers {
-    /// Check modifier keys for `any_pressed()` to populate bit flags.
-    pub fn from_input(input: &Input<KeyCode>) -> Modifiers {
-        let mut mods = Modifiers::empty();
-        if input.any_pressed([KeyCode::ShiftLeft, KeyCode::ShiftRight]) {
-            mods |= Modifiers::SHIFT;
-        }
-        if input.any_pressed([KeyCode::ControlLeft, KeyCode::ControlRight]) {
-            mods |= Modifiers::CONTROL;
-        }
-        if input.any_pressed([KeyCode::AltLeft, KeyCode::AltRight]) {
-            mods |= Modifiers::ALT;
-        }
-        if input.any_pressed([KeyCode::SuperLeft, KeyCode::SuperRight]) {
-            mods |= Modifiers::SUPER;
-        }
-        mods
+impl From<u8> for Modifiers {
+    fn from(x: u8) -> Modifiers {
+        Modifiers::from_bits(x).unwrap()
     }
 }
 
 #[cfg(feature = "bevy")]
-impl From<KeyCode> for Modifiers {
-    #[inline(always)]
-    fn from(key: KeyCode) -> Self {
-        match key {
-            KeyCode::ShiftLeft | KeyCode::ShiftRight => Modifiers::SHIFT,
-            KeyCode::ControlLeft | KeyCode::ControlRight => Modifiers::CONTROL,
-            KeyCode::AltLeft | KeyCode::AltRight => Modifiers::ALT,
-            KeyCode::SuperLeft | KeyCode::SuperRight => Modifiers::SUPER,
-            _ => Modifiers::empty(),
-        }
-    }
-}
-
-#[cfg(feature = "bevy")]
-pub mod bevy {
-    pub use keyseq_macros::{bevy_pkey as pkey,
-                            bevy_pkeyseq as pkeyseq};
-}
+pub mod bevy;
 
 #[cfg(feature = "winit")]
 pub mod winit {
@@ -80,4 +46,5 @@ mod tests {
     fn it_works() {
         assert_eq!(key!(A), (0, "A"));
     }
+
 }

@@ -89,7 +89,7 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
 }
 
 
-pub fn modifiers_id(modifier: Modifier) -> TokenStream {
+pub fn to_modifiers(modifier: Modifier) -> TokenStream {
     let id = modifier.to_tokens();
     quote! { ::winit::keyboard::ModifiersState::#id }
 }
