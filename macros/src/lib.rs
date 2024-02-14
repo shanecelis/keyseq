@@ -41,7 +41,7 @@ mod bevy;
 ///
 #[cfg_attr(feature = "bevy", doc = r##"
 ```compile_fail
-use keyseq_macros::bevy_pkey as pkey;
+use keyseq_macros::bevy_pkey_u8 as pkey;
 use bevy::prelude::KeyCode;
 let (mods, key) = pkey!(alt-NoSuchKey); // KeyCode::NoSuchKey does not exist.
 ```
@@ -62,7 +62,7 @@ pub fn pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
 #[cfg_attr(feature = "bevy", doc = r##"
 ```
-use keyseq_macros::bevy_pkey as pkey;
+use keyseq_macros::bevy_pkey_u8 as pkey;
 use bevy::prelude::KeyCode;
 assert_eq!(pkey!(A), (0, KeyCode::A));
 assert_eq!(pkey!(shift-A), (1, KeyCode::A));
@@ -79,8 +79,19 @@ assert_eq!(pkey!(alt-1), (4, KeyCode::Key1));
 #[cfg(feature = "bevy")]
 #[proc_macro_error]
 #[proc_macro]
-pub fn bevy_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn bevy_pkey_u8(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let (result, leftover) = read_key_chord(input.into(), to_modifiers_u8, bevy::get_pkey);
+    if !leftover.is_empty() {
+        abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
+    }
+    result.into()
+}
+
+#[cfg(feature = "bevy")]
+#[proc_macro_error]
+#[proc_macro]
+pub fn bevy_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let (result, leftover) = read_key_chord(input.into(), to_keyseq_modifiers, bevy::get_pkey);
     if !leftover.is_empty() {
         abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
     }
@@ -258,8 +269,19 @@ pub fn pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 #[cfg(feature = "bevy")]
 #[proc_macro_error]
 #[proc_macro]
-pub fn bevy_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn bevy_pkeyseq_u8(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let keys = read_key_chords(input.into(), to_modifiers_u8, bevy::get_pkey);
+    quote! {
+        [#(#keys),*]
+    }
+    .into()
+}
+
+#[cfg(feature = "bevy")]
+#[proc_macro_error]
+#[proc_macro]
+pub fn bevy_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let keys = read_key_chords(input.into(), to_keyseq_modifiers, bevy::get_pkey);
     quote! {
         [#(#keys),*]
     }

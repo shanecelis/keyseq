@@ -71,14 +71,14 @@ assert_eq!(key!(alt-ctrl-;), (ModifiersState::ALT | ModifiersState::CONTROL, Key
 
 ## Bevy
 
-With the "bevy" feature the `bevy_pkey!` macro returns a `(u8, KeyCode)` tuple.
+With the "bevy" feature the `bevy_pkey_u8!` macro returns a `(u8, KeyCode)` tuple.
 
 Note: Bevy doesn't have a modifiers bit flag like Winit does. And Bevy doesn't
 have a logical key representation yet but there is one coming.
 
 ```
 use bevy::prelude::KeyCode;
-use keyseq_macros::bevy_pkey as pkey;
+use keyseq_macros::bevy_pkey_u8 as pkey;
 assert_eq!(pkey!(shift-A), (1, KeyCode::A));
 assert_eq!(pkey!(ctrl-A), (2, KeyCode::A));
 assert_eq!(pkey!(alt-A), (4, KeyCode::A));

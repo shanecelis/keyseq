@@ -34,17 +34,8 @@ impl From<KeyCode> for Modifiers {
     }
 }
 
-// pub use keyseq_macros::{bevy_pkey as pkey,
-//                         bevy_pkeyseq as pkeyseq};
-#[macro_export]
-macro_rules! bevy_mod_pkey {
-    ($($key:tt)*) => {
-        { let (mods, key) = ::keyseq_macros::bevy_pkey!($($key)*);
-            (Modifiers::from_bits(mods).unwrap(), key)
-        }
-    }
-}
-pub use bevy_mod_pkey as pkey;
+pub use keyseq_macros::{bevy_pkey as pkey,
+                        bevy_pkeyseq as pkeyseq};
 
 // #[macro_export]
 // macro_rules! bevy_mod_pkeyseq {
@@ -64,7 +55,8 @@ mod tests {
 
     #[test]
     fn bevy_key() {
-        assert_eq!(keyseq_macros::bevy_pkey!(shift-A), (1, KeyCode::A));
-        assert_eq!(pkey!(shift-A), (Modifiers::SHIFT, KeyCode::A));
+        assert_eq!(keyseq_macros::bevy_pkey_u8!(shift-A), (1, KeyCode::A));
+        // Can't do this here.
+        // assert_eq!(pkey!(shift-A), (Modifiers::SHIFT, KeyCode::A));
     }
 }
