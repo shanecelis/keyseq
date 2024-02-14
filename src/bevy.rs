@@ -37,18 +37,6 @@ impl From<KeyCode> for Modifiers {
 pub use keyseq_macros::{bevy_pkey as pkey,
                         bevy_pkeyseq as pkeyseq};
 
-// #[macro_export]
-// macro_rules! bevy_mod_pkeyseq {
-//     ($($key:tt)*) => {
-//         { let array = ::keyseq_macros::bevy_pkeyseq!($($key)*);
-//           array.into_iter().map(|(mods, key)| (Modifiers::from_bits(mods).unwrap(), key))
-
-//             (Modifiers::from_bits(mods).unwrap(), key)
-//         }
-//     }
-// }
-// pub use bevy_mod_pkey as pkey;
-
 #[cfg(test)]
 mod tests {
     use super::*;

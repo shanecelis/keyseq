@@ -1,3 +1,5 @@
+#![doc(html_root_url = "https://docs.rs/keyseq/0.1.0")]
+#![doc = include_str!("../README.md")]
 use bitflags::bitflags;
 
 pub use keyseq_macros::{key,
