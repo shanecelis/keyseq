@@ -1,24 +1,23 @@
 use bitflags::bitflags;
 #[cfg(feature = "bevy")]
-use bevy::input::keyboard::{Input, KeyCode};
-// pub fn add(left: usize, right: usize) -> usize {
-//     left + right
-// }
+use ::bevy::input::{Input, keyboard::{KeyCode}};
+
 pub use keyseq_macros::{key,
                         keyseq,
                         pkey,
                         pkeyseq};
 
 bitflags! {
-    /// A bit flag that stores the modifier keys--alt, control, shift, and super--in a byte.
+    /// A bit flag that stores the modifier keys--alt, control, shift, and
+    /// super--in a byte.
     #[derive(Clone, Copy, Debug, PartialOrd, PartialEq, Eq, Hash, Ord)]
     pub struct Modifiers: u8 {
-        /// Represents the alt key, left or right.
-        const ALT     = 0b00000001;
+        /// Represents the shift key, left or right.
+        const SHIFT   = 0b00000001;
         /// Represents the control key, left or right.
         const CONTROL = 0b00000010;
-        /// Represents the shift key, left or right.
-        const SHIFT   = 0b00000100;
+        /// Represents the alt key, left or right.
+        const ALT     = 0b00000100;
         /// Represents the macOS command or Windows key, left or right.
         const SUPER   = 0b00001000;
     }
@@ -45,6 +44,7 @@ impl Modifiers {
     }
 }
 
+#[cfg(feature = "bevy")]
 impl From<KeyCode> for Modifiers {
     #[inline(always)]
     fn from(key: KeyCode) -> Self {
