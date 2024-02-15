@@ -6,20 +6,10 @@
 
 Specify key chords using a short-hand, e.g., `ctrl-A`, for the [bevy game engine](https://bevyengine.org) or [winit](https://github.com/rust-windowing/winit).
 
-# Install
+# Description
 
-``` sh
-cargo add keyseq_macros
-```
+This crate is the an internal crate of procedural macros for the `keyseq` crate. See that crate for documentation, tests, and examples.
 
-# Concepts
-
-* Logical keys are specified by what the key does. If pressing the key produces
-  a 'q', then it is logically a 'q' key.
-* Physical keys are specified by the scan code the keyboard emits; they do
-  not change. There is a physical 'Q' key, often to the right of the tab key.
-  There is no physical lower-case 'q' key.
-  
 # Principal Macros
 
 * The `key!` macro specifies a logical key chord.
@@ -65,26 +55,6 @@ With the "bevy" feature the `bevy_pkey!` macro returns a `(keyseq::Modifiers, Ke
 
 Note: Bevy doesn't have a modifiers bit flag like Winit does. And Bevy doesn't
 have a logical key representation yet (but there is one coming).
-
-
-# Examples
-
-## Winit Example
-Run a winit-based example:
-
-``` sh
-cargo run --example winit
-```
-
-Press `1` or `shift-1` and it will print a message.
-
-## Bevy Example
-
-``` sh
-cargo run --example bevy
-```
-
-This will show a rotating cube with the shader as its surfaces.
 
 # License
 
