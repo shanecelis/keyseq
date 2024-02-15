@@ -15,12 +15,12 @@ bitflags! {
     /// super--in a byte.
     #[derive(Clone, Copy, Debug, PartialOrd, PartialEq, Eq, Hash, Ord)]
     pub struct Modifiers: u8 {
-        /// Represents the shift key, left or right.
-        const SHIFT   = 0b00000001;
         /// Represents the control key, left or right.
-        const CONTROL = 0b00000010;
+        const CONTROL = 0b00000001;
         /// Represents the alt key, left or right.
-        const ALT     = 0b00000100;
+        const ALT     = 0b00000010;
+        /// Represents the shift key, left or right.
+        const SHIFT   = 0b00000100;
         /// Represents the macOS command or Windows key, left or right.
         const SUPER   = 0b00001000;
     }

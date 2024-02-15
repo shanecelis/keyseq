@@ -29,8 +29,8 @@ fn main() -> Result<(), impl std::error::Error> {
     let mut modifiers = ModifiersState::default();
     let mut binds = HashMap::new();
 
-    binds.insert(pkey! { 1 }, "number 1");
-    binds.insert(pkey! { shift-1 }, "!!!!");
+    binds.insert(pkey! { 1 }, "1");
+    binds.insert(pkey! { shift-1 }, "shift-1");
 
     event_loop.run(move |event, elwt| {
         if let Event::WindowEvent { event, .. } = event {
@@ -42,16 +42,6 @@ fn main() -> Result<(), impl std::error::Error> {
                 WindowEvent::KeyboardInput { event, .. } => {
                     if event.state == ElementState::Pressed && !event.repeat {
                         // println!("Got key {:?}", event.logical_key);
-                        // match event.key_without_modifiers().as_ref() {
-                        //     Key::Character("1") => {
-                        //         if modifiers.shift_key() {
-                        //             println!("Shift + 1 | logical_key: {:?}", event.logical_key);
-                        //         } else {
-                        //             println!("1");
-                        //         }
-                        //     }
-                        //     _ => (),
-                        // }
                         if let PhysicalKey::Code(key_code) = event.physical_key {
                             if let Some(j) = binds.get(&(modifiers, key_code)) {
                                 println!("Got key binding {:?}", j);
