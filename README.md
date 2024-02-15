@@ -29,10 +29,10 @@ cargo add keyseq
 
 # Usage
 
-The `key!` macro returns a `(u8, &str)` tuple to describe a key chord. This
-particular representation is impractical in most cases since one would need to
-interrogate the untyped bitflags and string. The real use case comes with its
-features.
+The `keyseq::key!` macro returns a `(u8, &str)` tuple to describe a key chord.
+This particular representation is impractical since one would need to
+interrogate the untyped bitflags and string. The real use case is
+with features and modules like `keyseq::bevy::key!`.
 
 ```
 use keyseq::key;
@@ -43,7 +43,7 @@ assert_eq!(key!(alt-A), (4, "A"));
 assert_eq!(key!(super-A), (8, "A"));
 ```
 
-The `keyseq!` macro returns a `[(u8, &str)]` array to describe a key chord sequence.
+The `keyseq::keyseq!` macro returns a `[(u8, &str)]` array to describe a key chord sequence.
 
 ```
 use keyseq::keyseq;
