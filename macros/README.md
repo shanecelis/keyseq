@@ -58,33 +58,14 @@ assert_eq!(keyseq!(shift-A shift-B), [(4, "A"), (4, "B")]);
 
 With the "winit" feature the `winit_key!` macro returns a `(ModifiersState, Key)` tuple.
 
-```
-use keyseq_macros::winit_key as key;
-use winit::keyboard::{ModifiersState, Key};
-assert_eq!(key!(a), (ModifiersState::empty(), Key::Character('a')));
-assert_eq!(key!(shift-a), (ModifiersState::SHIFT, Key::Character('a')));
-assert_eq!(key!(ctrl-a), (ModifiersState::CONTROL, Key::Character('a')));
-assert_eq!(key!(alt-a), (ModifiersState::ALT, Key::Character('a')));
-assert_eq!(key!(super-a), (ModifiersState::SUPER, Key::Character('a')));
-assert_eq!(key!(ctrl-alt-;), (ModifiersState::ALT | ModifiersState::CONTROL, Key::Character(';')));
-```
 
 ## Bevy
 
-With the "bevy" feature the `bevy_pkey_u8!` macro returns a `(u8, KeyCode)` tuple.
+With the "bevy" feature the `bevy_pkey!` macro returns a `(keyseq::Modifiers, KeyCode)` tuple.
 
 Note: Bevy doesn't have a modifiers bit flag like Winit does. And Bevy doesn't
 have a logical key representation yet (but there is one coming).
 
-```
-use bevy::prelude::KeyCode;
-use keyseq_macros::bevy_pkey_u8 as pkey;
-assert_eq!(pkey!(ctrl-A), (1, KeyCode::A));
-assert_eq!(pkey!(alt-A), (2, KeyCode::A));
-assert_eq!(pkey!(shift-A), (4, KeyCode::A));
-assert_eq!(pkey!(super-A), (8, KeyCode::A));
-assert_eq!(pkey!(ctrl-shift-A), (5, KeyCode::A));
-```
 
 # Examples
 

@@ -20,13 +20,13 @@ mod bevy;
 /// ```
 /// # use keyseq_macros::pkey;
 /// assert_eq!(pkey!(A), (0, "A"));
-/// assert_eq!(pkey!(shift-A), (1, "A"));
-/// assert_eq!(pkey!(ctrl-A), (2, "A"));
-/// assert_eq!(pkey!(alt-A), (4, "A"));
+/// assert_eq!(pkey!(ctrl-A), (1, "A"));
+/// assert_eq!(pkey!(alt-A), (2, "A"));
+/// assert_eq!(pkey!(shift-A), (4, "A"));
 /// assert_eq!(pkey!(super-A), (8, "A"));
-/// assert_eq!(pkey!(alt-ctrl-;), (6, "Semicolon"));
+/// assert_eq!(pkey!(ctrl-alt-;), (3, "Semicolon"));
 /// assert_eq!(pkey!(1), (0, "Key1"));
-/// assert_eq!(pkey!(alt-1), (4, "Key1"));
+/// assert_eq!(pkey!(alt-1), (2, "Key1"));
 /// ```
 ///
 /// More than one key will cause a panic at compile-time. Use keyseq! for that.
@@ -53,37 +53,6 @@ pub fn pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     result.into()
 }
 
-/// Short hand notation describes a physical key chord as `(modifiers:
-/// u8, key: `[bevy::prelude::KeyCode][keycode]`)`.
-///
-/// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
-#[cfg_attr(feature = "bevy", doc = r##"
-```
-use keyseq_macros::bevy_pkey_u8 as pkey;
-use bevy::prelude::KeyCode;
-assert_eq!(pkey!(A), (0, KeyCode::A));
-assert_eq!(pkey!(shift-A), (1, KeyCode::A));
-assert_eq!(pkey!(ctrl-A), (2, KeyCode::A));
-assert_eq!(pkey!(alt-A), (4, KeyCode::A));
-assert_eq!(pkey!(super-A), (8, KeyCode::A));
-assert_eq!(pkey!(shift-ctrl-A), (3, KeyCode::A));
-assert_eq!(pkey!(alt-ctrl-;), (6, KeyCode::Semicolon));
-assert_eq!(pkey!(alt-ctrl-Semicolon), (6, KeyCode::Semicolon));
-assert_eq!(pkey!(1), (0, KeyCode::Key1));
-assert_eq!(pkey!(alt-1), (4, KeyCode::Key1));
-```
-"##)]
-#[cfg(feature = "bevy")]
-#[proc_macro_error]
-#[proc_macro]
-pub fn bevy_pkey_u8(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let (result, leftover) = read_key_chord(input.into(), to_modifiers_u8, bevy::get_pkey);
-    if !leftover.is_empty() {
-        abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
-    }
-    result.into()
-}
-
 #[cfg(feature = "bevy")]
 #[proc_macro_error]
 #[proc_macro]
@@ -100,13 +69,6 @@ pub fn bevy_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 ///
 /// [mods]: https://docs.rs/winit/latest/winit/keyboard/struct.ModifiersState.html
 /// [keycode]: https://docs.rs/winit/latest/winit/keyboard/enum.KeyCode.html
-#[cfg_attr(feature = "winit", doc = r##"
-```
-use keyseq_macros::winit_pkey as pkey;
-use winit::keyboard::{ModifiersState, KeyCode};
-assert_eq!(pkey!(A), (ModifiersState::empty(), KeyCode::KeyA));
-```
-"##)]
 #[cfg(feature = "winit")]
 #[proc_macro_error]
 #[proc_macro]
@@ -158,47 +120,6 @@ pub fn key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 ///
 /// [mods]: https://docs.rs/winit/latest/winit/keyboard/struct.ModifiersState.html
 /// [key]: https://docs.rs/winit/latest/winit/keyboard/enum.Key.html
-#[cfg_attr(feature = "winit", doc = r##"
-```
-use keyseq_macros::winit_key as key;
-use winit::keyboard::{ModifiersState, Key};
-assert_eq!(key!(a), (ModifiersState::empty(), Key::Character('a')));
-assert_eq!(key!(A), (ModifiersState::empty(), Key::Character('A')));
-assert_eq!(key!(shift-A), (ModifiersState::SHIFT, Key::Character('A')));
-assert_eq!(key!(shift-a), (ModifiersState::SHIFT, Key::Character('a')));
-assert_eq!(key!(ctrl-A), (ModifiersState::CONTROL, Key::Character('A')));
-assert_eq!(key!(alt-A), (ModifiersState::ALT, Key::Character('A')));
-assert_eq!(key!(super-A), (ModifiersState::SUPER, Key::Character('A')));
-assert_eq!(key!(alt-ctrl-;), (ModifiersState::ALT | ModifiersState::CONTROL, Key::Character(';')));
-assert_eq!(key!(1), (ModifiersState::empty(), Key::Character('1')));
-assert_eq!(key!(!), (ModifiersState::empty(), Key::Character('!')));
-```
-
-```
-use keyseq_macros::winit_pkey as pkey;
-use winit::keyboard::{ModifiersState, KeyCode};
-assert_eq!(pkey!(A), (ModifiersState::empty(), KeyCode::KeyA));
-```
-
-"##)]
-
-#[cfg_attr(feature = "winit", doc = r##"
-```
-use keyseq_macros::winit_key as key;
-use winit::keyboard::{ModifiersState, Key};
-assert_eq!(key!(;), (ModifiersState::empty(), Key::Character(';')));
-assert_eq!(key!(ctrl-;), (ModifiersState::CONTROL, Key::Character(';')));
-```
-
-This does have a limitation though because the macro does not do reverse look
-ups from character to name.
-
-```compile_fail
-# use keyseq_macros::winit_key as key;
-use winit::keyboard::{ModifiersState, Key};
-assert_eq!(key!(ctrl-Semicolon), (ModifiersState::CONTROL, Key::Character(';')));
-```
-"##)]
 #[cfg(feature = "winit")]
 #[proc_macro_error]
 #[proc_macro]
@@ -257,21 +178,6 @@ pub fn keyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 #[proc_macro]
 pub fn pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let keys = read_key_chords(input.into(), to_modifiers_u8, get_pkey);
-    quote! {
-        [#(#keys),*]
-    }
-    .into()
-}
-
-/// Short hand notation describes a sequence of physical key chord as `[(modifiers:
-/// u8, key: `[bevy::prelude::KeyCode][keycode]`)]`.
-///
-/// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
-#[cfg(feature = "bevy")]
-#[proc_macro_error]
-#[proc_macro]
-pub fn bevy_pkeyseq_u8(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let keys = read_key_chords(input.into(), to_modifiers_u8, bevy::get_pkey);
     quote! {
         [#(#keys),*]
     }

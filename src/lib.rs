@@ -32,17 +32,11 @@ impl From<u8> for Modifiers {
     }
 }
 
+#[cfg(feature = "winit")]
+pub mod winit;
+
 #[cfg(feature = "bevy")]
 pub mod bevy;
-
-/// keyseq macros for winit library
-#[cfg(feature = "winit")]
-pub mod winit {
-    pub use keyseq_macros::{winit_key as key,
-                            winit_keyseq as keyseq,
-                            winit_pkey as pkey,
-                            winit_pkeyseq as pkeyseq};
-}
 
 #[cfg(test)]
 mod tests {

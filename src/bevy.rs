@@ -36,7 +36,7 @@ impl From<KeyCode> for Modifiers {
 }
 
 /// Short hand notation describes a physical key chord as `(modifiers: `[Modifiers]`,
-/// key_code: `[bevy::input::keyboard::KeyCode]`)`.
+/// key_code: `[bevy::prelude::KeyCode][keycode]`)`.
 ///
 /// Specify a key and any modifiers.
 ///
@@ -45,12 +45,12 @@ impl From<KeyCode> for Modifiers {
 /// use bevy::prelude::KeyCode;
 /// assert_eq!(pkey!(A), (Modifiers::empty(), KeyCode::A));
 /// assert_eq!(pkey!(ctrl-A), (Modifiers::CONTROL, KeyCode::A));
-/// assert_eq!(pkey!(alt-A), (Modifiers::ALT, KeyCode::"A"));
-/// assert_eq!(pkey!(shift-A), (Modifiers::SHIFT, KeyCode::"A"));
-/// assert_eq!(pkey!(super-A), (Modifiers::SUPER, KeyCode::"A"));
-/// assert_eq!(pkey!(ctrl-alt-;), (Modifiers::CTRL | Modifiers::ALT, KeyCode::Semicolon));
+/// assert_eq!(pkey!(alt-A), (Modifiers::ALT, KeyCode::A));
+/// assert_eq!(pkey!(shift-A), (Modifiers::SHIFT, KeyCode::A));
+/// assert_eq!(pkey!(super-A), (Modifiers::SUPER, KeyCode::A));
+/// assert_eq!(pkey!(ctrl-alt-;), (Modifiers::CONTROL | Modifiers::ALT, KeyCode::Semicolon));
 /// assert_eq!(pkey!(1), (Modifiers::empty(), KeyCode::Key1));
-/// assert_eq!(pkey!(alt-1), (Modifiers::Alt, KeyCode::Key1));
+/// assert_eq!(pkey!(alt-1), (Modifiers::ALT, KeyCode::Key1));
 /// ```
 ///
 /// More than one key will cause a panic at compile-time. Use keyseq! for that.
@@ -69,17 +69,11 @@ impl From<KeyCode> for Modifiers {
 /// use bevy::prelude::KeyCode;
 /// let (mods, key) = pkey!(alt-NoSuchKey); // KeyCode::NoSuchKey does not exist.
 /// ```
+/// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
 pub use keyseq_macros::bevy_pkey as pkey;
+
+/// Short hand notation describes a sequence of physical key chord as `[(modifiers:
+/// `[Modifiers]`, key: `[bevy::prelude::KeyCode][keycode]`)]`.
+///
+/// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
 pub use keyseq_macros::bevy_pkeyseq as pkeyseq;
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn bevy_key() {
-        assert_eq!(keyseq_macros::bevy_pkey_u8!(shift-A), (1, KeyCode::A));
-        // Can't do this here.
-        // assert_eq!(pkey!(shift-A), (Modifiers::SHIFT, KeyCode::A));
-    }
-}

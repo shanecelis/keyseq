@@ -12,14 +12,12 @@ maintenance = { status = "actively-developed" }
 
 [features]
 default = []
-winit = ["keyseq_macros/winit"]
+winit = ["dep:winit", "keyseq_macros/winit"]
 bevy = ["dep:bevy", "keyseq_macros/bevy", "bevy/bevy_winit"]
 
 [dependencies]
 keyseq_macros = { version = "0.1.0", path = "macros" }
 bevy = { version = "0.12.1", default-features = false, optional = true }
+winit = { version = "0.29.10", default-features = false, optional = true }
 bitflags = "2.4.2"
 
-[dev-dependencies]
-winit = { version = "0.29.10", optional = false }
-#bevy = { version = "0.12.1", default-features = false, optional = true }

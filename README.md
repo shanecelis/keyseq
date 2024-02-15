@@ -54,9 +54,9 @@ The `keyseq::poor::key!` macro returns a `(u8, &str)` tuple to describe a key ch
 ```
 use keyseq::poor::key;
 assert_eq!(key!(A), (0, "A"));
-assert_eq!(key!(shift-A), (1, "A"));
-assert_eq!(key!(ctrl-A), (2, "A"));
-assert_eq!(key!(alt-A), (4, "A"));
+assert_eq!(key!(ctrl-A), (1, "A"));
+assert_eq!(key!(alt-A), (2, "A"));
+assert_eq!(key!(shift-A), (4, "A"));
 assert_eq!(key!(super-A), (8, "A"));
 ```
 
@@ -66,7 +66,7 @@ chord sequence.
 ```
 use keyseq::poor::keyseq;
 assert_eq!(keyseq!(A B), [(0, "A"), (0, "B")]);
-assert_eq!(keyseq!(shift-A shift-B), [(1, "A"), (1, "B")]);
+assert_eq!(keyseq!(shift-A shift-B), [(4, "A"), (4, "B")]);
 ```
 
 These particular representations are impractical since one would need to
