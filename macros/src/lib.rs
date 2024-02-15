@@ -2,7 +2,7 @@
 #![doc = include_str!("../README.md")]
 extern crate proc_macro;
 use proc_macro2::{Delimiter, Group, Ident, Punct, Spacing, TokenStream, TokenTree, Span, Literal};
-use proc_macro_error::{abort, proc_macro_error};
+use proc_macro_error::{abort, proc_macro_error, abort_call_site, emit_call_site_warning};
 use quote::quote;
 use std::borrow::Cow;
 
@@ -37,15 +37,12 @@ mod bevy;
 /// }
 /// ```
 ///
-/// This macro does not ensure the key names exist but the compiler will.
+/// This macro does not ensure the key names exist.
 ///
-#[cfg_attr(feature = "bevy", doc = r##"
-```compile_fail
-use keyseq_macros::bevy_pkey_u8 as pkey;
-use bevy::prelude::KeyCode;
-let (mods, key) = pkey!(alt-NoSuchKey); // KeyCode::NoSuchKey does not exist.
-```
-"##)]
+/// ```
+/// # use keyseq_macros::pkey;
+/// assert_eq!(pkey!(alt-NoSuchKey), (2, "NoSuchKey"));
+/// ```
 #[proc_macro_error]
 #[proc_macro]
 pub fn pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
@@ -130,13 +127,13 @@ pub fn winit_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// # use keyseq_macros::key;
 /// assert_eq!(key!(a), (0, "a"));
 /// assert_eq!(key!(A), (0, "A"));
-/// assert_eq!(key!(shift-A), (1, "A"));
-/// assert_eq!(key!(ctrl-A), (2, "A"));
-/// assert_eq!(key!(alt-A), (4, "A"));
+/// assert_eq!(key!(ctrl-A), (1, "A"));
+/// assert_eq!(key!(alt-A), (2, "A"));
+/// assert_eq!(key!(shift-A), (4, "A"));
 /// assert_eq!(key!(super-A), (8, "A"));
-/// assert_eq!(key!(alt-ctrl-;), (6, ";"));
+/// assert_eq!(key!(ctrl-alt-;), (3, ";"));
 /// assert_eq!(key!(1), (0, "1"));
-/// assert_eq!(key!(alt-1), (4, "1"));
+/// assert_eq!(key!(alt-1), (2, "1"));
 /// ```
 ///
 /// More than one key will cause a panic at compile-time. Use keyseq! for that.
@@ -231,7 +228,7 @@ pub fn winit_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// ```
 /// use keyseq_macros::keyseq;
 /// assert_eq!(keyseq!(A B), [(0, "A"), (0, "B")]);
-/// assert_eq!(keyseq!(shift-A ctrl-B), [(1, "A"), (2, "B")]);
+/// assert_eq!(keyseq!(shift-A ctrl-B), [(4, "A"), (1, "B")]);
 /// ```
 ///
 /// When no features are enabled, there are no smarts to check whether a key is real
@@ -252,6 +249,10 @@ pub fn keyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     .into()
 }
 
+/// Short hand notation describes a sequence of physical key chord as `[(modifiers:
+/// u8, key_code: &str)]`.
+///
+/// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
 #[proc_macro_error]
 #[proc_macro]
 pub fn pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
@@ -396,7 +397,7 @@ fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
                         Some(label.into())
                     }
                     x @ 'a'..='z' => {
-                        abort!(x, "Use uppercase key names");
+                        abort!(x, "Use uppercase key names for physical keys");
                         // let s = x.to_ascii_uppercase().to_string();
                         // Some(s.into())
                     }
@@ -411,13 +412,15 @@ fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
     }.map(key_code_path)
 }
 
+#[rustfmt::skip]
+#[derive(Clone, Copy)]
 enum Modifier {
-    // Use same order as winit.
-    None = 0,
-    Shift = 1,
-    Control = 2,
-    Alt = 3,
-    Super = 4,
+    None    = 0,
+    // Use the OS X Human interface guidelines order.
+    Control = 1,
+    Alt     = 2,
+    Shift   = 3,
+    Super   = 4,
 }
 
 impl Modifier {
@@ -431,8 +434,20 @@ impl Modifier {
             Modifier::Super => quote! { SUPER },
         }
     }
+
+    #[allow(dead_code)]
+    fn to_bitflag(&self) -> u8 {
+        let mut number = *self as u8;
+        if number != 0 {
+            number = 1 << (number - 1);
+            // This is the bitflag scheme that winit's ModifiersState uses:
+            // number = 1 << (number - 1) * 3;
+        }
+        number
+    }
 }
 
+#[allow(dead_code)]
 fn to_keyseq_modifiers(modifier: Modifier) -> TokenStream {
     let token = modifier.to_tokens();
     quote! { ::keyseq::Modifiers::#token }
@@ -440,12 +455,7 @@ fn to_keyseq_modifiers(modifier: Modifier) -> TokenStream {
 
 #[allow(unused_variables)]
 fn to_modifiers_u8(modifier: Modifier) -> TokenStream {
-    let mut number = modifier as u8;
-    if number != 0 {
-        number = 1 << (number - 1);
-        // This is the bitflag scheme that winit's ModifiersState uses:
-        // number = 1 << (number - 1) * 3;
-    }
+    let number = modifier.to_bitflag();
     let x = proc_macro2::Literal::u8_suffixed(number);
     quote! { #x }
 }
@@ -506,6 +516,22 @@ fn read_modifiers<F: Fn(Modifier) -> TokenStream>(input: TokenStream, to_modifie
             _ => false,
         }
     }
+    let mut bitflags: u8 = 0;
+
+    let mut to_mods = |modifier: Modifier| {
+        let bitflag = modifier.to_bitflag();
+        if bitflag < bitflags {
+            // emit_warning!(gcc
+            // emit_call_site_warning!("Modifiers must occur in this order: control, alt, shift, super.");
+            if cfg!(feature = "strict-order") {
+                abort_call_site!("Modifiers must occur in this order: control, alt, shift, super.");
+            } else {
+                emit_call_site_warning!("Modifiers must occur in this order: control, alt, shift, super.");
+            }
+        }
+        bitflags |= bitflag;
+        to_modifiers(modifier)
+    };
 
     while let Some(tree) = i.next() {
         if i.peek().is_none() || (!is_dash(&tree) && !is_dash(i.peek().unwrap())) {
@@ -516,19 +542,19 @@ fn read_modifiers<F: Fn(Modifier) -> TokenStream>(input: TokenStream, to_modifie
                 TokenTree::Ident(ref ident) => match ident.span().source_text().unwrap().as_str() {
                     "shift" => Some(TokenTree::Group(Group::new(
                         Delimiter::None,
-                        to_modifiers(Modifier::Shift),
+                        to_mods(Modifier::Shift),
                     ))),
                     "ctrl" => Some(TokenTree::Group(Group::new(
                         Delimiter::None,
-                        to_modifiers(Modifier::Control),
+                        to_mods(Modifier::Control),
                     ))),
                     "alt" => Some(TokenTree::Group(Group::new(
                         Delimiter::None,
-                        to_modifiers(Modifier::Alt),
+                        to_mods(Modifier::Alt),
                     ))),
                     "super" => Some(TokenTree::Group(Group::new(
                         Delimiter::None,
-                        to_modifiers(Modifier::Super),
+                        to_mods(Modifier::Super),
                     ))),
                     _ => None,
                 },

@@ -36,9 +36,9 @@ bitflags[^1] and string. The real use case comes with its features.
 ```
 use keyseq_macros::key;
 assert_eq!(key!(A), (0, "A"));
-assert_eq!(key!(shift-A), (1, "A"));
-assert_eq!(key!(ctrl-A), (2, "A"));
-assert_eq!(key!(alt-A), (4, "A"));
+assert_eq!(key!(ctrl-A), (1, "A"));
+assert_eq!(key!(alt-A), (2, "A"));
+assert_eq!(key!(shift-A), (4, "A"));
 assert_eq!(key!(super-A), (8, "A"));
 ```
 
@@ -47,7 +47,7 @@ The `keyseq!` macro returns a `[(u8, &str)]` array to describe a key chord seque
 ```
 use keyseq_macros::keyseq;
 assert_eq!(keyseq!(A B), [(0, "A"), (0, "B")]);
-assert_eq!(keyseq!(shift-A shift-B), [(1, "A"), (1, "B")]);
+assert_eq!(keyseq!(shift-A shift-B), [(4, "A"), (4, "B")]);
 ```
 # Features
 
@@ -66,7 +66,7 @@ assert_eq!(key!(shift-a), (ModifiersState::SHIFT, Key::Character('a')));
 assert_eq!(key!(ctrl-a), (ModifiersState::CONTROL, Key::Character('a')));
 assert_eq!(key!(alt-a), (ModifiersState::ALT, Key::Character('a')));
 assert_eq!(key!(super-a), (ModifiersState::SUPER, Key::Character('a')));
-assert_eq!(key!(alt-ctrl-;), (ModifiersState::ALT | ModifiersState::CONTROL, Key::Character(';')));
+assert_eq!(key!(ctrl-alt-;), (ModifiersState::ALT | ModifiersState::CONTROL, Key::Character(';')));
 ```
 
 ## Bevy
@@ -79,11 +79,11 @@ have a logical key representation yet (but there is one coming).
 ```
 use bevy::prelude::KeyCode;
 use keyseq_macros::bevy_pkey_u8 as pkey;
-assert_eq!(pkey!(shift-A), (1, KeyCode::A));
-assert_eq!(pkey!(ctrl-A), (2, KeyCode::A));
-assert_eq!(pkey!(alt-A), (4, KeyCode::A));
+assert_eq!(pkey!(ctrl-A), (1, KeyCode::A));
+assert_eq!(pkey!(alt-A), (2, KeyCode::A));
+assert_eq!(pkey!(shift-A), (4, KeyCode::A));
 assert_eq!(pkey!(super-A), (8, KeyCode::A));
-assert_eq!(pkey!(shift-ctrl-A), (3, KeyCode::A));
+assert_eq!(pkey!(ctrl-shift-A), (5, KeyCode::A));
 ```
 
 # Examples

@@ -10,7 +10,7 @@ use winit::{
     platform::modifier_supplement::KeyEventExtModifierSupplement,
     window::{Window, WindowBuilder},
 };
-use keyseq_macros::{key, keyseq};
+use keyseq::winit::{pkey, keyseq};
 
 #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
 fn main() {
@@ -29,8 +29,8 @@ fn main() -> Result<(), impl std::error::Error> {
     let mut modifiers = ModifiersState::default();
     let mut binds = HashMap::new();
 
-    binds.insert(key! { 1 }, "number 1");
-    binds.insert(key! { shift-1 }, "!!!!");
+    binds.insert(pkey! { 1 }, "number 1");
+    binds.insert(pkey! { shift-1 }, "!!!!");
 
     event_loop.run(move |event, elwt| {
         if let Event::WindowEvent { event, .. } = event {
@@ -41,7 +41,7 @@ fn main() -> Result<(), impl std::error::Error> {
                 }
                 WindowEvent::KeyboardInput { event, .. } => {
                     if event.state == ElementState::Pressed && !event.repeat {
-                        println!("Got key {:?}", event.logical_key);
+                        // println!("Got key {:?}", event.logical_key);
                         // match event.key_without_modifiers().as_ref() {
                         //     Key::Character("1") => {
                         //         if modifiers.shift_key() {

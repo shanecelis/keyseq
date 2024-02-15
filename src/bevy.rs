@@ -1,3 +1,4 @@
+//! keyseq macros for bevy game engine
 use super::Modifiers;
 use ::bevy::input::{Input, keyboard::{KeyCode}};
 
@@ -34,8 +35,42 @@ impl From<KeyCode> for Modifiers {
     }
 }
 
-pub use keyseq_macros::{bevy_pkey as pkey,
-                        bevy_pkeyseq as pkeyseq};
+/// Short hand notation describes a physical key chord as `(modifiers: `[Modifiers]`,
+/// key_code: `[bevy::input::keyboard::KeyCode]`)`.
+///
+/// Specify a key and any modifiers.
+///
+/// ```
+/// use keyseq::{Modifiers, bevy::pkey};
+/// use bevy::prelude::KeyCode;
+/// assert_eq!(pkey!(A), (Modifiers::empty(), KeyCode::A));
+/// assert_eq!(pkey!(ctrl-A), (Modifiers::CONTROL, KeyCode::A));
+/// assert_eq!(pkey!(alt-A), (Modifiers::ALT, KeyCode::"A"));
+/// assert_eq!(pkey!(shift-A), (Modifiers::SHIFT, KeyCode::"A"));
+/// assert_eq!(pkey!(super-A), (Modifiers::SUPER, KeyCode::"A"));
+/// assert_eq!(pkey!(ctrl-alt-;), (Modifiers::CTRL | Modifiers::ALT, KeyCode::Semicolon));
+/// assert_eq!(pkey!(1), (Modifiers::empty(), KeyCode::Key1));
+/// assert_eq!(pkey!(alt-1), (Modifiers::Alt, KeyCode::Key1));
+/// ```
+///
+/// More than one key will cause a panic at compile-time. Use keyseq! for that.
+///
+/// ```compile_fail
+/// # use keyseq::bevy::pkey;
+/// fn too_many_keys() {
+///     let _ = pkey!(A B);
+/// }
+/// ```
+///
+/// This macro does not ensure the key names exist but the compiler will.
+///
+/// ```compile_fail
+/// use keyseq::bevy::pkey;
+/// use bevy::prelude::KeyCode;
+/// let (mods, key) = pkey!(alt-NoSuchKey); // KeyCode::NoSuchKey does not exist.
+/// ```
+pub use keyseq_macros::bevy_pkey as pkey;
+pub use keyseq_macros::bevy_pkeyseq as pkeyseq;
 
 #[cfg(test)]
 mod tests {

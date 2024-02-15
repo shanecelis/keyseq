@@ -68,7 +68,7 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
                         Some(label.into())
                     }
                     x @ 'a'..='z' => {
-                        abort!(x, "Use uppercase key names");
+                        abort!(x, "Use uppercase key names for physical keys");
                         // let s = x.to_ascii_uppercase().to_string();
                         // Some(s.into())
                     }

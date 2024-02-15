@@ -4,7 +4,18 @@
   [![crates-io](https://img.shields.io/crates/v/keyseq.svg)](https://crates.io/crates/keyseq)
   [![api-docs](https://docs.rs/keyseq/badge.svg)](https://docs.rs/keyseq)
 
-Specify key chords using a short-hand, e.g., `ctrl-A`, for the [bevy game engine](https://bevyengine.org) or [winit](https://github.com/rust-windowing/winit).
+Specify key chords using `ctrl-A` short-hand, supports the [bevy game
+engine](https://bevyengine.org) and
+[winit](https://github.com/rust-windowing/winit).
+
+# Objective
+
+* Make specifying keys in code similar to how they're specified in
+  documentation; use the same notation for both if possible.
+
+* For the sake of searching and finding key chords references, prefer one way of
+  describing the keys, e.g., accept "ctrl-A"; do not accept "control-A" or "C-A"
+  or "Ctrl+A".
 
 # Install
 
@@ -29,13 +40,19 @@ cargo add keyseq
 
 # Usage
 
-The `keyseq::key!` macro returns a `(u8, &str)` tuple to describe a key chord.
-This particular representation is impractical since one would need to
-interrogate the untyped bitflags and string. The real use case is
-with features and modules like `keyseq::bevy::key!`.
+
+# Features
+
+* poor
+* winit
+* bevy
+
+## Poor
+
+The `keyseq::poor::key!` macro returns a `(u8, &str)` tuple to describe a key chord.
 
 ```
-use keyseq::key;
+use keyseq::poor::key;
 assert_eq!(key!(A), (0, "A"));
 assert_eq!(key!(shift-A), (1, "A"));
 assert_eq!(key!(ctrl-A), (2, "A"));
@@ -43,21 +60,24 @@ assert_eq!(key!(alt-A), (4, "A"));
 assert_eq!(key!(super-A), (8, "A"));
 ```
 
-The `keyseq::keyseq!` macro returns a `[(u8, &str)]` array to describe a key chord sequence.
+The `keyseq::poor::keyseq!` macro returns a `[(u8, &str)]` array to describe a key
+chord sequence.
 
 ```
-use keyseq::keyseq;
+use keyseq::poor::keyseq;
 assert_eq!(keyseq!(A B), [(0, "A"), (0, "B")]);
 assert_eq!(keyseq!(shift-A shift-B), [(1, "A"), (1, "B")]);
 ```
-# Features
 
-* winit
-* bevy
+These particular representations are impractical since one would need to
+interrogate untyped bitflags and string. The real use case requires features.
 
 ## Winit
 
-With the "winit" feature the `keyseq::winit::key!` macro returns a `(ModifiersState, Key)` tuple.
+With the "winit" feature the `keyseq::winit::key!` macro returns a
+`(ModifiersState, Key)` tuple.
+
+### Logical Keys
 
 ```
 use keyseq::winit::key as key;
@@ -67,7 +87,24 @@ assert_eq!(key!(shift-a), (ModifiersState::SHIFT, Key::Character('a')));
 assert_eq!(key!(ctrl-a), (ModifiersState::CONTROL, Key::Character('a')));
 assert_eq!(key!(alt-a), (ModifiersState::ALT, Key::Character('a')));
 assert_eq!(key!(super-a), (ModifiersState::SUPER, Key::Character('a')));
-assert_eq!(key!(alt-ctrl-;), (ModifiersState::ALT | ModifiersState::CONTROL, Key::Character(';')));
+
+assert_eq!(key!(ctrl-alt-;), (ModifiersState::ALT | ModifiersState::CONTROL, Key::Character(';')));
+```
+
+### Physical Keys
+
+```
+use keyseq::winit::pkey as pkey;
+use winit::keyboard::{ModifiersState, KeyCode};
+assert_eq!(pkey!(A), (ModifiersState::empty(), KeyCode::KeyA));
+```
+
+The following code will fail to compile. It insists on a capital 'A' for
+specifying the A key.
+
+```compile_fail
+# use keyseq::winit::pkey as pkey;
+let (mods, key_code) = pkey!(a); // error: Use uppercase key names for physical keys
 ```
 
 ## Bevy
@@ -81,11 +118,11 @@ have a logical key representation yet (but there is one coming).
 ```
 use bevy::prelude::KeyCode;
 use keyseq::{Modifiers, bevy::pkey as pkey};
-assert_eq!(pkey!(shift-A), (Modifiers::SHIFT, KeyCode::A));
 assert_eq!(pkey!(ctrl-A), (Modifiers::CONTROL, KeyCode::A));
 assert_eq!(pkey!(alt-A), (Modifiers::ALT, KeyCode::A));
+assert_eq!(pkey!(shift-A), (Modifiers::SHIFT, KeyCode::A));
 assert_eq!(pkey!(super-A), (Modifiers::SUPER, KeyCode::A));
-assert_eq!(pkey!(shift-ctrl-A), (Modifiers::SHIFT | Modifiers::CONTROL, KeyCode::A));
+assert_eq!(pkey!(ctrl-shift-A), (Modifiers::SHIFT | Modifiers::CONTROL, KeyCode::A));
 ```
 
 # Examples

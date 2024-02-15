@@ -2,13 +2,16 @@
 #![doc = include_str!("../README.md")]
 use bitflags::bitflags;
 
-pub use keyseq_macros::{key,
-                        keyseq,
-                        pkey,
-                        pkeyseq};
+/// keyseq macros that are a "poor" representation but useful for internal tests.
+pub mod poor {
+    pub use keyseq_macros::{key,
+                            keyseq,
+                            pkey,
+                            pkeyseq};
+}
 
 bitflags! {
-    /// A bit flag that stores the modifier keys--alt, control, shift, and
+    /// A bit flag that stores the modifier keys--shift, control, alt, and
     /// super--in a byte.
     #[derive(Clone, Copy, Debug, PartialOrd, PartialEq, Eq, Hash, Ord)]
     pub struct Modifiers: u8 {
@@ -32,6 +35,7 @@ impl From<u8> for Modifiers {
 #[cfg(feature = "bevy")]
 pub mod bevy;
 
+/// keyseq macros for winit library
 #[cfg(feature = "winit")]
 pub mod winit {
     pub use keyseq_macros::{winit_key as key,
@@ -46,7 +50,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        assert_eq!(key!(A), (0, "A"));
+        assert_eq!(poor::key!(A), (0, "A"));
     }
 
 }
