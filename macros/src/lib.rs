@@ -18,7 +18,7 @@ mod bevy;
 /// Specify a key and any modifiers.
 ///
 /// ```
-/// # use keyseq_macros::pkey;
+/// # use keyseq_macros::poor_pkey as pkey;
 /// assert_eq!(pkey!(A), (0, "A"));
 /// assert_eq!(pkey!(ctrl-A), (1, "A"));
 /// assert_eq!(pkey!(alt-A), (2, "A"));
@@ -32,6 +32,7 @@ mod bevy;
 /// More than one key will cause a panic at compile-time. Use keyseq! for that.
 ///
 /// ```compile_fail
+/// # use keyseq_macros::poor_pkey as pkey;
 /// fn too_many_keys() {
 ///     let _ = pkey!(A B);
 /// }
@@ -40,12 +41,13 @@ mod bevy;
 /// This macro does not ensure the key names exist.
 ///
 /// ```
-/// # use keyseq_macros::pkey;
+/// # use keyseq_macros::poor_pkey as pkey;
 /// assert_eq!(pkey!(alt-NoSuchKey), (2, "NoSuchKey"));
 /// ```
+#[cfg(feature = "poor")]
 #[proc_macro_error]
 #[proc_macro]
-pub fn pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn poor_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let (result, leftover) = read_key_chord(input.into(), to_modifiers_u8, get_pkey);
     if !leftover.is_empty() {
         abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
@@ -86,7 +88,7 @@ pub fn winit_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// Specify a key and any modifiers.
 ///
 /// ```
-/// # use keyseq_macros::key;
+/// # use keyseq_macros::poor_key as key;
 /// assert_eq!(key!(a), (0, "a"));
 /// assert_eq!(key!(A), (0, "A"));
 /// assert_eq!(key!(ctrl-A), (1, "A"));
@@ -101,13 +103,15 @@ pub fn winit_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// More than one key will cause a panic at compile-time. Use keyseq! for that.
 ///
 /// ```compile_fail
+/// # use keyseq_macros::poor_key as key;
 /// fn too_many_keys() {
 ///     let _ = key!(A B);
 /// }
 /// ```
+#[cfg(feature = "poor")]
 #[proc_macro_error]
 #[proc_macro]
-pub fn key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn poor_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let (result, leftover) = read_key_chord(input.into(), to_modifiers_u8, get_key);
     if !leftover.is_empty() {
         abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
@@ -147,7 +151,7 @@ pub fn winit_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 ///
 ///
 /// ```
-/// use keyseq_macros::keyseq;
+/// use keyseq_macros::poor_keyseq as keyseq;
 /// assert_eq!(keyseq!(A B), [(0, "A"), (0, "B")]);
 /// assert_eq!(keyseq!(shift-A ctrl-B), [(4, "A"), (1, "B")]);
 /// ```
@@ -156,13 +160,14 @@ pub fn winit_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// or not.
 ///
 /// ```
-/// # use keyseq_macros::keyseq;
+/// use keyseq_macros::poor_keyseq as keyseq;
 /// assert_eq!(keyseq!(A NoSuchKey), [(0, "A"), (0, "NoSuchKey")]);
 /// ```
 ///
+#[cfg(feature = "poor")]
 #[proc_macro_error]
 #[proc_macro]
-pub fn keyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn poor_keyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let keys = read_key_chords(input.into(), to_modifiers_u8, get_key);
     quote! {
         [#(#keys),*]
@@ -174,9 +179,10 @@ pub fn keyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// u8, key_code: &str)]`.
 ///
 /// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
+#[cfg(feature = "poor")]
 #[proc_macro_error]
 #[proc_macro]
-pub fn pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn poor_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let keys = read_key_chords(input.into(), to_modifiers_u8, get_pkey);
     quote! {
         [#(#keys),*]

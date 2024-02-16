@@ -27,6 +27,7 @@ proc-macro = true
 [features]
 default = ["strict-order"]
 winit = []
+poor = []
 bevy = []
 bevy-input-sequence = []
 strict-order = []

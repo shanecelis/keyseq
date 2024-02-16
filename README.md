@@ -4,23 +4,28 @@
   [![crates-io](https://img.shields.io/crates/v/keyseq.svg)](https://crates.io/crates/keyseq)
   [![api-docs](https://docs.rs/keyseq/badge.svg)](https://docs.rs/keyseq)
 
-Specify key chords using `ctrl-A` short-hand, supports the [bevy game
-engine](https://bevyengine.org) and
+Specify key chords using `ctrl-A` short-hand, supports [bevy](https://bevyengine.org) and
 [winit](https://github.com/rust-windowing/winit).
 
 # Objective
 
-* Make specifying keys in code similar to how they're specified in
-  documentation; use the same notation for both if possible.
+* Specify key chords in code the same way as they are specified in
+  documentation.
 
-* For the sake of searching and finding key chords references, prefer one way of
+* For the sake of finding key chords in code, prefer one way of
   describing the keys, e.g., accept "ctrl-A"; do not accept "control-A" or "C-A"
   or "Ctrl+A".
 
 # Install
 
 ``` sh
-cargo add keyseq
+cargo add keyseq --features bevy
+```
+
+OR 
+
+``` sh
+cargo add keyseq --features winit
 ```
 
 # Concepts
@@ -34,43 +39,16 @@ cargo add keyseq
 # Principal Macros
 
 * The `key!` macro specifies a logical key chord.
-* The `keyseq!` macro specifies logical key chord sequences.
+* The `keyseq!` macro specifies a logical key chord sequence.
 * The `pkey!` macro specifies a physical key chord.
-* The `pkeyseq!` macro specifies physical key chord sequences.
-
-# Usage
-
+* The `pkeyseq!` macro specifies a physical key chord sequence.
 
 # Features
 
-* poor
-* winit
-* bevy
-
-## Poor
-
-The `keyseq::poor::key!` macro returns a `(u8, &str)` tuple to describe a key chord.
-
-```
-use keyseq::poor::key;
-assert_eq!(key!(A), (0, "A"));
-assert_eq!(key!(ctrl-A), (1, "A"));
-assert_eq!(key!(alt-A), (2, "A"));
-assert_eq!(key!(shift-A), (4, "A"));
-assert_eq!(key!(super-A), (8, "A"));
-```
-
-The `keyseq::poor::keyseq!` macro returns a `[(u8, &str)]` array to describe a key
-chord sequence.
-
-```
-use keyseq::poor::keyseq;
-assert_eq!(keyseq!(A B), [(0, "A"), (0, "B")]);
-assert_eq!(keyseq!(shift-A shift-B), [(4, "A"), (4, "B")]);
-```
-
-These particular representations are impractical since one would need to
-interrogate untyped bitflags and string. The real use case requires features.
+* winit, include support for winit macros
+* bevy, include support for bevy macros
+* poor, an anemic representation for internal testing
+* strict-order, use a strict order for modifiers: ctrl, alt, shift, super (enabled by default)
 
 ## Winit
 
@@ -80,31 +58,51 @@ With the "winit" feature the `keyseq::winit::key!` macro returns a
 ### Logical Keys
 
 ```
-use keyseq::winit::key as key;
+use keyseq::winit::key;
 use winit::keyboard::{ModifiersState, Key};
-assert_eq!(key!(a), (ModifiersState::empty(), Key::Character('a')));
-assert_eq!(key!(shift-a), (ModifiersState::SHIFT, Key::Character('a')));
-assert_eq!(key!(ctrl-a), (ModifiersState::CONTROL, Key::Character('a')));
-assert_eq!(key!(alt-a), (ModifiersState::ALT, Key::Character('a')));
-assert_eq!(key!(super-a), (ModifiersState::SUPER, Key::Character('a')));
 
-assert_eq!(key!(ctrl-alt-;), (ModifiersState::ALT | ModifiersState::CONTROL, Key::Character(';')));
+assert_eq!(key!{ a },          (ModifiersState::empty(), Key::Character('a')));
+assert_eq!(key!{ ctrl-a },     (ModifiersState::CONTROL, Key::Character('a')));
+assert_eq!(key!{ alt-a },      (ModifiersState::ALT,     Key::Character('a')));
+assert_eq!(key!{ shift-a },    (ModifiersState::SHIFT,   Key::Character('a')));
+assert_eq!(key!{ super-a },    (ModifiersState::SUPER,   Key::Character('a')));
+assert_eq!(key!{ ctrl-alt-; }, (ModifiersState::ALT |
+                                ModifiersState::CONTROL, Key::Character(';')));
+```
+
+### Logical Key Sequences
+```
+use keyseq::winit::keyseq;
+# use winit::keyboard::{ModifiersState, Key};
+assert_eq!(keyseq!{ a ctrl-b}, [(ModifiersState::empty(), Key::Character('a')),
+                                (ModifiersState::CONTROL, Key::Character('b'))]);
 ```
 
 ### Physical Keys
 
 ```
-use keyseq::winit::pkey as pkey;
+# use keyseq::winit::pkey;
 use winit::keyboard::{ModifiersState, KeyCode};
-assert_eq!(pkey!(A), (ModifiersState::empty(), KeyCode::KeyA));
+
+assert_eq!(pkey!{ A },         (ModifiersState::empty(), KeyCode::KeyA));
 ```
 
 The following code will fail to compile. It insists on a capital 'A' for
 specifying the A key.
 
 ```compile_fail
-# use keyseq::winit::pkey as pkey;
-let (mods, key_code) = pkey!(a); // error: Use uppercase key names for physical keys
+# use keyseq::winit::pkey;
+let (mods, key) = pkey!{ a }; // error: Use uppercase key names for physical keys
+```
+
+### Strict modifier order
+
+With the "strict-order" feature, modifiers out of order will produce compiler
+errors. Without the feature, it will emit warnings.
+
+```compile_fail
+# use keyseq::winit::pkey;
+let _ = pkey!{ alt-ctrl-A }; // error: Modifiers must occur in this order: control, alt, shift, super.
 ```
 
 ## Bevy
@@ -117,13 +115,40 @@ have a logical key representation yet (but there is one coming).
 
 ```
 use bevy::prelude::KeyCode;
-use keyseq::{Modifiers, bevy::pkey as pkey};
-assert_eq!(pkey!(ctrl-A), (Modifiers::CONTROL, KeyCode::A));
-assert_eq!(pkey!(alt-A), (Modifiers::ALT, KeyCode::A));
-assert_eq!(pkey!(shift-A), (Modifiers::SHIFT, KeyCode::A));
-assert_eq!(pkey!(super-A), (Modifiers::SUPER, KeyCode::A));
-assert_eq!(pkey!(ctrl-shift-A), (Modifiers::SHIFT | Modifiers::CONTROL, KeyCode::A));
+use keyseq::{Modifiers, bevy::pkey};
+assert_eq!(pkey!{ ctrl-A },    (Modifiers::CONTROL, KeyCode::A));
+assert_eq!(pkey!{ alt-A },     (Modifiers::ALT,     KeyCode::A));
+assert_eq!(pkey!{ shift-A },   (Modifiers::SHIFT,   KeyCode::A));
+assert_eq!(pkey!{ super-A },   (Modifiers::SUPER,   KeyCode::A));
+assert_eq!(pkey!{ ctrl-shift-A }, 
+                               (Modifiers::SHIFT |
+                                Modifiers::CONTROL, KeyCode::A));
 ```
+
+## Poor
+
+The `keyseq::poor::key!` macro returns a `(u8, &str)` tuple to describe a key chord.
+
+```
+use keyseq::poor::key;
+assert_eq!(key!{ A },       (0, "A"));
+assert_eq!(key!{ ctrl-A },  (1, "A"));
+assert_eq!(key!{ alt-A },   (2, "A"));
+assert_eq!(key!{ shift-A }, (4, "A"));
+assert_eq!(key!{ super-A }, (8, "A"));
+```
+
+The `keyseq::poor::keyseq!` macro returns a `[(u8, &str)]` array to describe a key
+chord sequence.
+
+```
+use keyseq::poor::keyseq;
+assert_eq!(keyseq!{ A B },             [(0, "A"), (0, "B")]);
+assert_eq!(keyseq!{ shift-A shift-B }, [(4, "A"), (4, "B")]);
+```
+
+These particular representations are impractical since one would need to
+interrogate untyped bitflags and string. The real use case requires features.
 
 # Examples
 

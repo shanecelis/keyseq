@@ -4,10 +4,10 @@ use bitflags::bitflags;
 
 /// keyseq macros that are a "poor" representation but useful for internal tests.
 pub mod poor {
-    pub use keyseq_macros::{key,
-                            keyseq,
-                            pkey,
-                            pkeyseq};
+    pub use keyseq_macros::{poor_key as key,
+                            poor_keyseq as keyseq,
+                            poor_pkey as pkey,
+                            poor_pkeyseq as pkeyseq};
 }
 
 bitflags! {
