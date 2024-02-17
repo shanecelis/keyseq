@@ -4,6 +4,7 @@ use bevy::prelude::*;
 use keyseq::{Modifiers, bevy::pkey};
 
 fn main() {
+    println!("Press A key with different modifier keys.");
     App::new()
         .add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
@@ -11,24 +12,21 @@ fn main() {
         .run();
 }
 
-/// This system prints when `Ctrl + Shift + A` is pressed
+/// This system detects some key presses.
 fn keyboard_input_system(input: Res<Input<KeyCode>>) {
     let mods = Modifiers::from_input(&input);
-
-
     for key in input.get_just_pressed() {
-        // info!("{} {:?}", mods.bits(), key);
-        // info!("{:?} vs {:?}", (mods, key), pkey!(ctrl-shift-A));
-        // info!("{}", pkey!(ctrl-shift-A).0.bits());
         #[rustfmt::skip]
         match (mods, key) {
-            // pkey!(A) => info!("Just pressed A!"),
-            pkey!(ctrl-A) | pkey!(super-A) => info!("Just pressed ctrl-A or super-A!"),
-            pkey!(ctrl-alt-A)              => info!("Just pressed ctrl-alt-A!"),
-            pkey!(alt-shift-A)             => info!("Just pressed alt-shift-A!"),
-            pkey!(shift-A)                 => info!("Just pressed shift-A!"),
-            pkey!(A)                       => info!("Just pressed A!"),
-            _                              => info!("No key matched"),
+            pkey!(ctrl-A) | pkey!(super-A) => println!("Just pressed ctrl-A or super-A!"),
+            pkey!(ctrl-alt-A)              => println!("Just pressed ctrl-alt-A!"),
+            pkey!(ctrl-shift-A)            => println!("Just pressed ctrl-shift-A!"),
+            pkey!(alt-shift-A)             => println!("Just pressed alt-shift-A!"),
+            pkey!(shift-A)                 => println!("Just pressed shift-A!"),
+            pkey!(alt-A)                   => println!("Just pressed alt-A!"),
+            pkey!(super-A)                 => println!("Just pressed super-A!"),
+            pkey!(A)                       => println!("Just pressed A!"),
+            _                              => println!("No key matched"),
         }
     }
 }
