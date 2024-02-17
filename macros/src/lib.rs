@@ -75,7 +75,8 @@ pub fn bevy_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 #[proc_macro_error]
 #[proc_macro]
 pub fn winit_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let (result, leftover) = read_key_chord(input.into(), winit::to_modifiers, winit::get_pkey);
+    // let (result, leftover) = read_key_chord(input.into(), winit::to_modifiers, winit::get_pkey);
+    let (result, leftover) = read_key_chord(input.into(), to_keyseq_modifiers, winit::get_pkey);
     if !leftover.is_empty() {
         abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
     }
@@ -128,7 +129,8 @@ pub fn poor_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 #[proc_macro_error]
 #[proc_macro]
 pub fn winit_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let (result, leftover) = read_key_chord(input.into(), winit::to_modifiers, winit::get_key);
+    // let (result, leftover) = read_key_chord(input.into(), winit::to_modifiers, winit::get_key);
+    let (result, leftover) = read_key_chord(input.into(), to_keyseq_modifiers, winit::get_key);
     if !leftover.is_empty() {
         abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
     }
@@ -210,7 +212,8 @@ pub fn bevy_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 #[proc_macro_error]
 #[proc_macro]
 pub fn winit_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let keys = read_key_chords(input.into(), winit::to_modifiers, winit::get_pkey);
+    // let keys = read_key_chords(input.into(), winit::to_modifiers, winit::get_pkey);
+    let keys = read_key_chords(input.into(), to_keyseq_modifiers, winit::get_pkey);
     quote! {
         [#(#keys),*]
     }
@@ -226,7 +229,8 @@ pub fn winit_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 #[proc_macro_error]
 #[proc_macro]
 pub fn winit_keyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let keys = read_key_chords(input.into(), winit::to_modifiers, winit::get_key);
+    // let keys = read_key_chords(input.into(), winit::to_modifiers, winit::get_key);
+    let keys = read_key_chords(input.into(), to_keyseq_modifiers, winit::get_key);
     quote! {
         [#(#keys),*]
     }
@@ -234,7 +238,7 @@ pub fn winit_keyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 }
 
 fn read_key_chords<F,G>(input: TokenStream, to_modifiers: F, get_key: G) -> Vec<TokenStream>
-    where F: Fn(Modifier) -> TokenStream,
+    where F: Fn(u8) -> TokenStream,
     G: Fn(TokenTree) -> Option<TokenStream>
 {
     let mut input: TokenStream = input.into();
@@ -358,21 +362,14 @@ impl Modifier {
 }
 
 #[allow(dead_code)]
-fn to_keyseq_modifiers(modifier: Modifier) -> TokenStream {
-    let token = match modifier {
-        Modifier::None => {
-            // Our keyseq::Modifier has `NONE` so we can use `key!()` in patterns.
-            quote! { NONE }
-        },
-        _ => modifier.to_tokens()
-    };
-    quote! { ::keyseq::Modifiers::#token }
+fn to_keyseq_modifiers(bitflags: u8) -> TokenStream {
+    let x = proc_macro2::Literal::u8_suffixed(bitflags);
+    quote! { ::keyseq::Modifiers(#x) }
 }
 
 #[allow(unused_variables)]
-fn to_modifiers_u8(modifier: Modifier) -> TokenStream {
-    let number = modifier.to_bitflag();
-    let x = proc_macro2::Literal::u8_suffixed(number);
+fn to_modifiers_u8(bitflags: u8) -> TokenStream {
+    let x = proc_macro2::Literal::u8_suffixed(bitflags);
     quote! { #x }
 }
 
@@ -421,8 +418,7 @@ fn get_key_raw(tree: TokenTree) -> Option<Result<char, Cow<'static, str>>> {
     }
 }
 
-fn read_modifiers<F: Fn(Modifier) -> TokenStream>(input: TokenStream, to_modifiers: F) -> (TokenStream, TokenStream) {
-    let mut r = TokenStream::new();
+fn read_modifiers<F: Fn(u8) -> TokenStream>(input: TokenStream, to_modifiers: F) -> (TokenStream, TokenStream) {
     let mut i = input.into_iter().peekable();
     let mut last_tree = None;
 
@@ -434,7 +430,7 @@ fn read_modifiers<F: Fn(Modifier) -> TokenStream>(input: TokenStream, to_modifie
     }
     let mut bitflags: u8 = 0;
 
-    let mut to_mods = |modifier: Modifier| {
+    let mut accum_mods = |modifier: Modifier| {
         let bitflag = modifier.to_bitflag();
         if bitflag < bitflags {
             // emit_warning!(gcc
@@ -446,7 +442,6 @@ fn read_modifiers<F: Fn(Modifier) -> TokenStream>(input: TokenStream, to_modifie
             }
         }
         bitflags |= bitflag;
-        to_modifiers(modifier)
     };
 
     while let Some(tree) = i.next() {
@@ -454,34 +449,21 @@ fn read_modifiers<F: Fn(Modifier) -> TokenStream>(input: TokenStream, to_modifie
             last_tree = Some(tree);
             break;
         } else {
-            let replacement = match tree {
+            match tree {
                 TokenTree::Ident(ref ident) => match ident.span().source_text().unwrap().as_str() {
-                    "shift" => Some(TokenTree::Group(Group::new(
-                        Delimiter::None,
-                        to_mods(Modifier::Shift),
-                    ))),
-                    "ctrl" => Some(TokenTree::Group(Group::new(
-                        Delimiter::None,
-                        to_mods(Modifier::Control),
-                    ))),
-                    "alt" => Some(TokenTree::Group(Group::new(
-                        Delimiter::None,
-                        to_mods(Modifier::Alt),
-                    ))),
-                    "super" => Some(TokenTree::Group(Group::new(
-                        Delimiter::None,
-                        to_mods(Modifier::Super),
-                    ))),
-                    _ => None,
+                    "ctrl" => accum_mods(Modifier::Control),
+                    "alt" => accum_mods(Modifier::Alt),
+                    "shift" => accum_mods(Modifier::Shift),
+                    "super" => accum_mods(Modifier::Super),
+                    x => abort!(x, "Should be a modifier or a hyphen"),
                 },
                 TokenTree::Punct(ref punct) => match punct.as_char() {
                     // We could allow + notation too.
-                    '-' => Some(TokenTree::Punct(Punct::new('|', Spacing::Alone))),
-                    _ => None,
+                    '-' => {},
+                    x => abort!(x, "Should be a modifier or a hyphen"),
                 },
-                _ => None,
+                x => abort!(x, "Should be a modifier or a hyphen"),
             };
-            r.extend([replacement.unwrap_or(tree)]);
         }
     }
     // This will add an empty to finish the expression:
@@ -489,9 +471,13 @@ fn read_modifiers<F: Fn(Modifier) -> TokenStream>(input: TokenStream, to_modifie
     //    ctrl-alt-EMPTY -> Control | Alt | EMPTY.
     //
     //  And it will provide a valid Modifier when none have been provided.
-    r.extend([to_modifiers(Modifier::None)]);
+    // r.extend([to_modifiers(Modifier::None)]);
+
+    // let x = proc_macro2::Literal::u8_suffixed(bitflags);
     (
-        r,
+        // r,
+        to_modifiers(bitflags),
+        // quote!{ ::keyseq::Modifiers(#x) },
         TokenStream::from_iter(last_tree.into_iter().chain(i)),
     )
 }
@@ -510,7 +496,7 @@ fn read_key<F: Fn(TokenTree) -> Option<TokenStream>>(input: TokenStream, get_key
 }
 
 fn read_key_chord<F,G>(input: TokenStream, to_modifiers: F, get_key: G) -> (TokenStream, TokenStream)
-    where F:Fn(Modifier) -> TokenStream,
+    where F:Fn(u8) -> TokenStream,
     G: Fn(TokenTree) -> Option<TokenStream>
 {
     let (mods, input) = read_modifiers(input, to_modifiers);

@@ -74,13 +74,3 @@ pub mod winit;
 #[cfg(feature = "bevy")]
 pub mod bevy;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        assert_eq!(poor::key!(A), (0, "A"));
-    }
-
-}

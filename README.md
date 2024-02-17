@@ -58,33 +58,34 @@ With the "winit" feature the `keyseq::winit::key!` macro returns a
 ### Logical Keys
 
 ```
-use keyseq::winit::key;
-use winit::keyboard::{ModifiersState, Key};
+use keyseq::{Modifiers, winit::key};
+use winit::keyboard::Key;
 
-assert_eq!(key!{ a },          (ModifiersState::empty(), Key::Character('a')));
-assert_eq!(key!{ ctrl-a },     (ModifiersState::CONTROL, Key::Character('a')));
-assert_eq!(key!{ alt-a },      (ModifiersState::ALT,     Key::Character('a')));
-assert_eq!(key!{ shift-a },    (ModifiersState::SHIFT,   Key::Character('a')));
-assert_eq!(key!{ super-a },    (ModifiersState::SUPER,   Key::Character('a')));
-assert_eq!(key!{ ctrl-alt-; }, (ModifiersState::ALT |
-                                ModifiersState::CONTROL, Key::Character(';')));
+assert_eq!(key!{ a },          (Modifiers::NONE,    Key::Character('a')));
+assert_eq!(key!{ ctrl-a },     (Modifiers::CONTROL, Key::Character('a')));
+assert_eq!(key!{ alt-a },      (Modifiers::ALT,     Key::Character('a')));
+assert_eq!(key!{ shift-a },    (Modifiers::SHIFT,   Key::Character('a')));
+assert_eq!(key!{ super-a },    (Modifiers::SUPER,   Key::Character('a')));
+assert_eq!(key!{ ctrl-alt-; }, (Modifiers::ALT |
+                                Modifiers::CONTROL, Key::Character(';')));
 ```
 
 ### Logical Key Sequences
 ```
+# use keyseq::Modifiers;
+# use winit::keyboard::Key;
 use keyseq::winit::keyseq;
-# use winit::keyboard::{ModifiersState, Key};
-assert_eq!(keyseq!{ a ctrl-b}, [(ModifiersState::empty(), Key::Character('a')),
-                                (ModifiersState::CONTROL, Key::Character('b'))]);
+assert_eq!(keyseq!{ a ctrl-b}, [(Modifiers::NONE,    Key::Character('a')),
+                                (Modifiers::CONTROL, Key::Character('b'))]);
 ```
 
 ### Physical Keys
 
 ```
-# use keyseq::winit::pkey;
-use winit::keyboard::{ModifiersState, KeyCode};
+# use keyseq::{Modifiers, winit::pkey};
+use winit::keyboard::KeyCode;
 
-assert_eq!(pkey!{ A },         (ModifiersState::empty(), KeyCode::KeyA));
+assert_eq!(pkey!{ A },         (Modifiers::NONE,     KeyCode::KeyA));
 ```
 
 The following code will fail to compile. It insists on a capital 'A' for

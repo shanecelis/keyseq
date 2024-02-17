@@ -1,5 +1,4 @@
 #![allow(clippy::single_match)]
-use std::collections::HashMap;
 #[cfg(any(target_os = "macos", target_os = "windows", target_os = "linux"))]
 use winit::{
     dpi::LogicalSize,
@@ -10,7 +9,7 @@ use winit::{
     platform::modifier_supplement::KeyEventExtModifierSupplement,
     window::{Window, WindowBuilder},
 };
-use keyseq::winit::{pkey, keyseq};
+use keyseq::winit::pkey;
 
 #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
 fn main() {
@@ -19,18 +18,15 @@ fn main() {
 
 #[cfg(any(target_os = "macos", target_os = "windows", target_os = "linux"))]
 fn main() -> Result<(), impl std::error::Error> {
+    println!("Press A key with different modifier keys.");
     let event_loop = EventLoop::new().unwrap();
 
-    let window = WindowBuilder::new()
+    let _window = WindowBuilder::new()
         .with_inner_size(LogicalSize::new(400.0, 200.0))
         .build(&event_loop)
         .unwrap();
 
     let mut modifiers = ModifiersState::default();
-    let mut binds = HashMap::new();
-
-    binds.insert(pkey! { 1 }, "1");
-    binds.insert(pkey! { shift-1 }, "shift-1");
 
     event_loop.run(move |event, elwt| {
         if let Event::WindowEvent { event, .. } = event {
@@ -41,10 +37,18 @@ fn main() -> Result<(), impl std::error::Error> {
                 }
                 WindowEvent::KeyboardInput { event, .. } => {
                     if event.state == ElementState::Pressed && !event.repeat {
-                        // println!("Got key {:?}", event.logical_key);
                         if let PhysicalKey::Code(key_code) = event.physical_key {
-                            if let Some(j) = binds.get(&(modifiers, key_code)) {
-                                println!("Got key binding {:?}", j);
+                            #[rustfmt::skip]
+                            match (modifiers.into(), key_code) {
+                                pkey!(ctrl-A) | pkey!(super-A) => println!("Just pressed ctrl-A or super-A!"),
+                                pkey!(ctrl-alt-A)              => println!("Just pressed ctrl-alt-A!"),
+                                pkey!(ctrl-shift-A)            => println!("Just pressed ctrl-shift-A!"),
+                                pkey!(alt-shift-A)             => println!("Just pressed alt-shift-A!"),
+                                pkey!(shift-A)                 => println!("Just pressed shift-A!"),
+                                pkey!(alt-A)                   => println!("Just pressed alt-A!"),
+                                pkey!(super-A)                 => println!("Just pressed super-A!"),
+                                pkey!(A)                       => println!("Just pressed A!"),
+                                _                              => println!("No key matched"),
                             }
                         }
                     }

@@ -88,11 +88,10 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
     }.map(key_code_path)
 }
 
-
-pub fn to_modifiers(modifier: Modifier) -> TokenStream {
-    let id = modifier.to_tokens();
-    quote! { ::winit::keyboard::ModifiersState::#id }
-}
+// pub fn to_modifiers(bitflags: u8) -> TokenStream {
+//     
+//     quote! { ::winit::keyboard::ModifiersState::#id }
+// }
 
 fn key_code_path(id: Ident) -> TokenStream {
     quote! { ::winit::keyboard::KeyCode::#id }

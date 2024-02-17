@@ -1,7 +1,7 @@
 //! A simple 3D scene with light shining over a cube sitting on a plane.
 
-use bevy::{prelude::*, render::mesh::shape::Circle};
-use keyseq::{Modifiers, bevy::{pkey, pkeyseq}};
+use bevy::prelude::*;
+use keyseq::{Modifiers, bevy::pkey};
 
 fn main() {
     App::new()
@@ -16,25 +16,19 @@ fn keyboard_input_system(input: Res<Input<KeyCode>>) {
     let mods = Modifiers::from_input(&input);
 
 
-    let my_mods = Modifiers::SHIFT | Modifiers::CONTROL;
     for key in input.get_just_pressed() {
         // info!("{} {:?}", mods.bits(), key);
-        info!("{:?} vs {:?}", (mods, key), pkey!(ctrl-shift-A));
+        // info!("{:?} vs {:?}", (mods, key), pkey!(ctrl-shift-A));
         // info!("{}", pkey!(ctrl-shift-A).0.bits());
+        #[rustfmt::skip]
         match (mods, key) {
             // pkey!(A) => info!("Just pressed A!"),
-            pkey!(ctrl-A) => info!("Just pressed ctrl-A!"),
-            pkey!(ctrl-alt-A) => info!("Just pressed ctrl-alt-A!"),
-            // pkey!(ctrl-shift-A) => info!("Just pressed ctrl-shift-A!"),
-            pkey!(alt-shift-A) => info!("Just pressed alt-shift-A!"),
-            pkey!(shift-A) => info!("Just pressed shift-A!"),
-            (my_mods, KeyCode::A)  => info!("Just pressed ctrl-shift-A!"),
-            // (Modifiers::SHIFT | Modifiers::CONTROL, KeyCode::A)  => info!("Just pressed ctrl-shift-A!"),
-            _ => info!("No key matched"),
-
-        }
-        if key == &KeyCode::A {
-            info!("matched");
+            pkey!(ctrl-A) | pkey!(super-A) => info!("Just pressed ctrl-A or super-A!"),
+            pkey!(ctrl-alt-A)              => info!("Just pressed ctrl-alt-A!"),
+            pkey!(alt-shift-A)             => info!("Just pressed alt-shift-A!"),
+            pkey!(shift-A)                 => info!("Just pressed shift-A!"),
+            pkey!(A)                       => info!("Just pressed A!"),
+            _                              => info!("No key matched"),
         }
     }
 }
