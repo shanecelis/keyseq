@@ -45,15 +45,31 @@ cargo add keyseq --features winit
 
 # Features
 
-* winit, include support for winit macros
-* bevy, include support for bevy macros
+* winit, include support for winit
+* bevy, include support for bevy
 * poor, an anemic representation for internal testing
-* strict-order, use a strict order for modifiers: ctrl, alt, shift, super (enabled by default)
+* strict-order, use a strict order for modifiers: ctrl, alt, shift, super
+  (enabled by default)
 
 ## Winit
 
 With the "winit" feature the `keyseq::winit::lkey!` macro returns a
 `(ModifiersState, Key)` tuple.
+
+### Physical Keys
+
+```
+use keyseq::{Modifiers, winit::pkey};
+use winit::keyboard::KeyCode;
+
+assert_eq!(pkey!{ A },          (Modifiers::NONE,    KeyCode::KeyA));
+assert_eq!(pkey!{ ctrl-A },     (Modifiers::CONTROL, KeyCode::KeyA));
+assert_eq!(pkey!{ alt-A },      (Modifiers::ALT,     KeyCode::KeyA));
+assert_eq!(pkey!{ shift-A },    (Modifiers::SHIFT,   KeyCode::KeyA));
+assert_eq!(pkey!{ super-A },    (Modifiers::SUPER,   KeyCode::KeyA));
+assert_eq!(pkey!{ ctrl-alt-; }, (Modifiers::ALT |
+                                 Modifiers::CONTROL, KeyCode::Semicolon));
+```
 
 ### Logical Keys
 
@@ -67,7 +83,7 @@ assert_eq!(lkey!{ alt-a },      (Modifiers::ALT,     Key::Character('a')));
 assert_eq!(lkey!{ shift-a },    (Modifiers::SHIFT,   Key::Character('a')));
 assert_eq!(lkey!{ super-a },    (Modifiers::SUPER,   Key::Character('a')));
 assert_eq!(lkey!{ ctrl-alt-; }, (Modifiers::ALT |
-                                Modifiers::CONTROL, Key::Character(';')));
+                                 Modifiers::CONTROL, Key::Character(';')));
 ```
 
 ### Logical Key Sequences
@@ -75,18 +91,11 @@ assert_eq!(lkey!{ ctrl-alt-; }, (Modifiers::ALT |
 # use keyseq::Modifiers;
 # use winit::keyboard::Key;
 use keyseq::winit::lkeyseq;
-assert_eq!(lkeyseq!{ a ctrl-b}, [(Modifiers::NONE,    Key::Character('a')),
-                                (Modifiers::CONTROL, Key::Character('b'))]);
+assert_eq!(lkeyseq!{ a ctrl-b }, [(Modifiers::NONE,    Key::Character('a')),
+                                  (Modifiers::CONTROL, Key::Character('b'))]);
 ```
 
-### Physical Keys
-
-```
-# use keyseq::{Modifiers, winit::pkey};
-use winit::keyboard::KeyCode;
-
-assert_eq!(pkey!{ A },         (Modifiers::NONE,     KeyCode::KeyA));
-```
+### No lower case physical keys
 
 The following code will fail to compile. It insists on a capital 'A' for
 specifying the A key.
@@ -98,8 +107,8 @@ let (mods, key) = pkey!{ a }; // error: Use uppercase key names for physical key
 
 ### Strict modifier order
 
-With the "strict-order" feature, modifiers out of order will produce compiler
-errors. Without the feature, it will emit warnings.
+With the "strict-order" feature enabled by default, modifiers out of order will
+produce compiler errors. Without the feature, it will emit warnings.
 
 ```compile_fail
 # use keyseq::winit::pkey;
