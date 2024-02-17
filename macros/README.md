@@ -24,7 +24,7 @@ impractical in most cases since one would need to interrogate the untyped
 bitflags[^1] and string. The real use case comes with its features.
 
 ```
-use keyseq_macros::poor_key as key;
+use keyseq_macros::poor_pkey as key;
 assert_eq!(key!(A), (0, "A"));
 assert_eq!(key!(ctrl-A), (1, "A"));
 assert_eq!(key!(alt-A), (2, "A"));
@@ -35,7 +35,7 @@ assert_eq!(key!(super-A), (8, "A"));
 The `keyseq!` macro returns a `[(u8, &str)]` array to describe a key chord sequence.
 
 ```
-use keyseq_macros::poor_keyseq as keyseq;
+use keyseq_macros::poor_pkeyseq as keyseq;
 assert_eq!(keyseq!(A B), [(0, "A"), (0, "B")]);
 assert_eq!(keyseq!(shift-A shift-B), [(4, "A"), (4, "B")]);
 ```

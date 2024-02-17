@@ -2,7 +2,7 @@ use proc_macro2::{Ident, TokenStream, TokenTree, Span, Literal};
 use quote::quote;
 use std::borrow::Cow;
 use proc_macro_error::abort;
-use super::{Modifier, get_key_raw};
+use super::get_key_raw;
 
 pub fn get_key(tree: TokenTree) -> Option<TokenStream> {
     get_key_raw(tree).map(|r| match r {

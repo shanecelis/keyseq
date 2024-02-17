@@ -1,7 +1,7 @@
 #![doc(html_root_url = "https://docs.rs/keyseq_macros/0.1.0")]
 #![doc = include_str!("../README.md")]
 extern crate proc_macro;
-use proc_macro2::{Delimiter, Group, Ident, Punct, Spacing, TokenStream, TokenTree, Span, Literal};
+use proc_macro2::{Ident, TokenStream, TokenTree, Span, Literal};
 use proc_macro_error::{abort, proc_macro_error, abort_call_site, emit_call_site_warning};
 use quote::quote;
 use std::borrow::Cow;
@@ -89,7 +89,7 @@ pub fn winit_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// Specify a key and any modifiers.
 ///
 /// ```
-/// # use keyseq_macros::poor_key as key;
+/// # use keyseq_macros::poor_lkey as key;
 /// assert_eq!(key!(a), (0, "a"));
 /// assert_eq!(key!(A), (0, "A"));
 /// assert_eq!(key!(ctrl-A), (1, "A"));
@@ -153,7 +153,7 @@ pub fn winit_lkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 ///
 ///
 /// ```
-/// use keyseq_macros::poor_keyseq as keyseq;
+/// use keyseq_macros::poor_pkeyseq as keyseq;
 /// assert_eq!(keyseq!(A B), [(0, "A"), (0, "B")]);
 /// assert_eq!(keyseq!(shift-A ctrl-B), [(4, "A"), (1, "B")]);
 /// ```
@@ -162,7 +162,7 @@ pub fn winit_lkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// or not.
 ///
 /// ```
-/// use keyseq_macros::poor_keyseq as keyseq;
+/// use keyseq_macros::poor_pkeyseq as keyseq;
 /// assert_eq!(keyseq!(A NoSuchKey), [(0, "A"), (0, "NoSuchKey")]);
 /// ```
 ///
@@ -230,7 +230,7 @@ pub fn winit_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 #[proc_macro]
 pub fn winit_lkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     // let keys = read_key_chords(input.into(), winit::to_modifiers, winit::get_key);
-    let keys = read_key_chords(input.into(), to_keyseq_to_modifiers, winit::get_key);
+    let keys = read_key_chords(input.into(), to_keyseq_modifiers, winit::get_key);
     quote! {
         [#(#keys),*]
     }
@@ -328,6 +328,7 @@ fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
     }.map(key_code_path)
 }
 
+#[allow(dead_code)]
 #[rustfmt::skip]
 #[derive(Clone, Copy)]
 enum Modifier {
