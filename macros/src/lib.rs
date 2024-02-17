@@ -352,8 +352,6 @@ impl Modifier {
         let mut number = *self as u8;
         if number != 0 {
             number = 1 << (number - 1);
-            // This is the bitflag scheme that winit's ModifiersState uses:
-            // number = 1 << (number - 1) * 3;
         }
         number
     }
@@ -361,7 +359,13 @@ impl Modifier {
 
 #[allow(dead_code)]
 fn to_keyseq_modifiers(modifier: Modifier) -> TokenStream {
-    let token = modifier.to_tokens();
+    let token = match modifier {
+        Modifier::None => {
+            // Our keyseq::Modifier has `NONE` so we can use `key!()` in patterns.
+            quote! { NONE }
+        },
+        _ => modifier.to_tokens()
+    };
     quote! { ::keyseq::Modifiers::#token }
 }
 
