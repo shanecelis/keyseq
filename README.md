@@ -39,7 +39,7 @@ cargo add keyseq --features winit
 # Principal Macros
 
 * The `key!` macro specifies a logical key chord.
-* The `keyseq!` macro specifies a logical key chord sequence.
+* The `lkeyseq!` macro specifies a logical key chord sequence.
 * The `pkey!` macro specifies a physical key chord.
 * The `pkeyseq!` macro specifies a physical key chord sequence.
 
@@ -52,21 +52,21 @@ cargo add keyseq --features winit
 
 ## Winit
 
-With the "winit" feature the `keyseq::winit::key!` macro returns a
+With the "winit" feature the `keyseq::winit::lkey!` macro returns a
 `(ModifiersState, Key)` tuple.
 
 ### Logical Keys
 
 ```
-use keyseq::{Modifiers, winit::key};
+use keyseq::{Modifiers, winit::lkey};
 use winit::keyboard::Key;
 
-assert_eq!(key!{ a },          (Modifiers::NONE,    Key::Character('a')));
-assert_eq!(key!{ ctrl-a },     (Modifiers::CONTROL, Key::Character('a')));
-assert_eq!(key!{ alt-a },      (Modifiers::ALT,     Key::Character('a')));
-assert_eq!(key!{ shift-a },    (Modifiers::SHIFT,   Key::Character('a')));
-assert_eq!(key!{ super-a },    (Modifiers::SUPER,   Key::Character('a')));
-assert_eq!(key!{ ctrl-alt-; }, (Modifiers::ALT |
+assert_eq!(lkey!{ a },          (Modifiers::NONE,    Key::Character('a')));
+assert_eq!(lkey!{ ctrl-a },     (Modifiers::CONTROL, Key::Character('a')));
+assert_eq!(lkey!{ alt-a },      (Modifiers::ALT,     Key::Character('a')));
+assert_eq!(lkey!{ shift-a },    (Modifiers::SHIFT,   Key::Character('a')));
+assert_eq!(lkey!{ super-a },    (Modifiers::SUPER,   Key::Character('a')));
+assert_eq!(lkey!{ ctrl-alt-; }, (Modifiers::ALT |
                                 Modifiers::CONTROL, Key::Character(';')));
 ```
 
@@ -74,8 +74,8 @@ assert_eq!(key!{ ctrl-alt-; }, (Modifiers::ALT |
 ```
 # use keyseq::Modifiers;
 # use winit::keyboard::Key;
-use keyseq::winit::keyseq;
-assert_eq!(keyseq!{ a ctrl-b}, [(Modifiers::NONE,    Key::Character('a')),
+use keyseq::winit::lkeyseq;
+assert_eq!(lkeyseq!{ a ctrl-b}, [(Modifiers::NONE,    Key::Character('a')),
                                 (Modifiers::CONTROL, Key::Character('b'))]);
 ```
 
@@ -131,21 +131,21 @@ assert_eq!(pkey!{ ctrl-shift-A },
 The `keyseq::poor::key!` macro returns a `(u8, &str)` tuple to describe a key chord.
 
 ```
-use keyseq::poor::key;
-assert_eq!(key!{ A },       (0, "A"));
-assert_eq!(key!{ ctrl-A },  (1, "A"));
-assert_eq!(key!{ alt-A },   (2, "A"));
-assert_eq!(key!{ shift-A }, (4, "A"));
-assert_eq!(key!{ super-A }, (8, "A"));
+use keyseq::poor::lkey;
+assert_eq!(lkey!{ A },       (0, "A"));
+assert_eq!(lkey!{ ctrl-A },  (1, "A"));
+assert_eq!(lkey!{ alt-A },   (2, "A"));
+assert_eq!(lkey!{ shift-A }, (4, "A"));
+assert_eq!(lkey!{ super-A }, (8, "A"));
 ```
 
-The `keyseq::poor::keyseq!` macro returns a `[(u8, &str)]` array to describe a key
+The `keyseq::poor::lkeyseq!` macro returns a `[(u8, &str)]` array to describe a key
 chord sequence.
 
 ```
-use keyseq::poor::keyseq;
-assert_eq!(keyseq!{ A B },             [(0, "A"), (0, "B")]);
-assert_eq!(keyseq!{ shift-A shift-B }, [(4, "A"), (4, "B")]);
+use keyseq::poor::lkeyseq;
+assert_eq!(lkeyseq!{ A B },             [(0, "A"), (0, "B")]);
+assert_eq!(lkeyseq!{ shift-A shift-B }, [(4, "A"), (4, "B")]);
 ```
 
 These particular representations are impractical since one would need to

@@ -6,8 +6,8 @@ use std::fmt;
 /// keyseq macros that are a "poor" representation but useful for internal tests.
 #[cfg(feature = "poor")]
 pub mod poor {
-    pub use keyseq_macros::{poor_key as key,
-                            poor_keyseq as keyseq,
+    pub use keyseq_macros::{poor_lkey as lkey,
+                            poor_lkeyseq as lkeyseq,
                             poor_pkey as pkey,
                             poor_pkeyseq as pkeyseq};
 }

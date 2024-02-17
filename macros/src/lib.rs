@@ -112,7 +112,7 @@ pub fn winit_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 #[cfg(feature = "poor")]
 #[proc_macro_error]
 #[proc_macro]
-pub fn poor_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn poor_lkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let (result, leftover) = read_key_chord(input.into(), to_modifiers_u8, get_key);
     if !leftover.is_empty() {
         abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
@@ -128,7 +128,7 @@ pub fn poor_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 #[cfg(feature = "winit")]
 #[proc_macro_error]
 #[proc_macro]
-pub fn winit_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn winit_lkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     // let (result, leftover) = read_key_chord(input.into(), winit::to_modifiers, winit::get_key);
     let (result, leftover) = read_key_chord(input.into(), to_keyseq_modifiers, winit::get_key);
     if !leftover.is_empty() {
@@ -169,7 +169,7 @@ pub fn winit_key(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 #[cfg(feature = "poor")]
 #[proc_macro_error]
 #[proc_macro]
-pub fn poor_keyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn poor_lkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let keys = read_key_chords(input.into(), to_modifiers_u8, get_key);
     quote! {
         [#(#keys),*]
@@ -228,9 +228,9 @@ pub fn winit_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 #[cfg(feature = "winit")]
 #[proc_macro_error]
 #[proc_macro]
-pub fn winit_keyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn winit_lkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     // let keys = read_key_chords(input.into(), winit::to_modifiers, winit::get_key);
-    let keys = read_key_chords(input.into(), to_keyseq_modifiers, winit::get_key);
+    let keys = read_key_chords(input.into(), to_keyseq_to_modifiers, winit::get_key);
     quote! {
         [#(#keys),*]
     }

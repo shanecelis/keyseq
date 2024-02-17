@@ -13,7 +13,7 @@ This crate is the an internal crate of procedural macros for the `keyseq` crate.
 # Principal Macros
 
 * The `key!` macro specifies a logical key chord.
-* The `keyseq!` macro specifies logical key chord sequences.
+* The  lkeyseq!` macro specifies logical key chord sequences.
 * The `pkey!` macro specifies a physical key chord.
 * The `pkeyseq!` macro specifies physical key chord sequences.
 

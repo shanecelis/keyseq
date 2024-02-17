@@ -8,7 +8,7 @@ use crate::Modifiers;
 /// [mods]: https://docs.rs/winit/latest/winit/keyboard/struct.ModifiersState.html
 /// [key]: https://docs.rs/winit/latest/winit/keyboard/enum.Key.html
 /// ```
-/// use keyseq::{Modifiers, winit::key};
+/// use keyseq::{Modifiers, winit::lkey as key};
 /// use winit::keyboard::Key;
 ///
 /// assert_eq!(key!{ a },          (Modifiers::NONE,    Key::Character('a')));
@@ -24,12 +24,12 @@ use crate::Modifiers;
 /// ups from character to name.
 ///
 /// ```compile_fail
-/// # use keyseq_macros::winit_key as key;
+/// # use keyseq_macros::winit_lkey as lkey;
 /// use winit::keyboard::{ModifiersState, Key};
-/// assert_eq!(key!(ctrl-Semicolon), (ModifiersState::CONTROL, Key::Character(';'))); // fails
+/// assert_eq!(lkey!(ctrl-Semicolon), (ModifiersState::CONTROL, Key::Character(';')));
 /// ```
-pub use keyseq_macros::winit_key as key;
-pub use keyseq_macros::winit_keyseq as keyseq;
+pub use keyseq_macros::winit_lkey as lkey;
+pub use keyseq_macros::winit_lkeyseq as lkeyseq;
 
 /// Short hand notation describes a physical key chord as `(modifiers:`
 /// [winit::keyboard::ModifiersState][mods]`, key_code: `[winit::keyboard::KeyCode][keycode]`)`.
