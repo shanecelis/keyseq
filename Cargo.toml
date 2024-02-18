@@ -40,3 +40,12 @@ bitflags = "2.4.2"
 
 [dev-dependencies]
 bevy = { version = "0.12.1", default-features = true }
+version-sync = "0.9"
+
+[[example]]
+name = "winit"
+required-features = ["winit"]
+
+[[example]]
+name = "bevy"
+required-features = ["bevy"]

@@ -36,6 +36,7 @@ strict-order = []
 proc-macro-error = { version = "1.0.4", default-features = false }
 proc-macro2 = "1.0.69"
 quote = "1.0"
+version-sync = "0.9"
 
 # [dev-dependencies]
 # winit = { version = "0.29.10", optional = false }

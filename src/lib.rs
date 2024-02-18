@@ -1,5 +1,10 @@
 #![doc(html_root_url = "https://docs.rs/keyseq/0.1.0")]
-#![doc = include_str!("../README.md")]
+// The README is written with code that requires both winit and bevy features.
+#![cfg_attr(all(feature = "winit", feature = "bevy"),
+            doc = include_str!("../README.md"))]
+
+#![cfg_attr(not(all(feature = "winit", feature = "bevy")),
+            doc = "Warning: Not full documentation. Please generate doc with `--all-features` option to include README.")]
 use bitflags::bitflags;
 use std::fmt;
 

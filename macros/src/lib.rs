@@ -1,9 +1,12 @@
 #![doc(html_root_url = "https://docs.rs/keyseq_macros/0.1.0")]
 #![doc = include_str!("../README.md")]
 extern crate proc_macro;
+#[allow(unused_imports)]
 use proc_macro2::{Ident, Literal, Span, TokenStream, TokenTree};
+#[allow(unused_imports)]
 use proc_macro_error::{abort, abort_call_site, emit_call_site_warning, proc_macro_error};
 use quote::quote;
+#[allow(unused_imports)]
 use std::borrow::Cow;
 
 #[cfg(feature = "winit")]
@@ -12,38 +15,40 @@ mod winit;
 #[cfg(feature = "bevy")]
 mod bevy;
 
-/// Short hand notation describes a physical key chord as `(modifiers: u8,
-/// key_code: &str)`.
-///
-/// Specify a key and any modifiers.
-///
-/// ```
-/// # use keyseq_macros::poor_pkey as pkey;
-/// assert_eq!(pkey!(A), (0, "A"));
-/// assert_eq!(pkey!(ctrl-A), (1, "A"));
-/// assert_eq!(pkey!(alt-A), (2, "A"));
-/// assert_eq!(pkey!(shift-A), (4, "A"));
-/// assert_eq!(pkey!(super-A), (8, "A"));
-/// assert_eq!(pkey!(ctrl-alt-;), (3, "Semicolon"));
-/// assert_eq!(pkey!(1), (0, "Key1"));
-/// assert_eq!(pkey!(alt-1), (2, "Key1"));
-/// ```
-///
-/// More than one key will cause a panic at compile-time. Use keyseq! for that.
-///
-/// ```compile_fail
-/// # use keyseq_macros::poor_pkey as pkey;
-/// fn too_many_keys() {
-///     let _ = pkey!(A B);
-/// }
-/// ```
-///
-/// This macro does not ensure the key names exist.
-///
-/// ```
-/// # use keyseq_macros::poor_pkey as pkey;
-/// assert_eq!(pkey!(alt-NoSuchKey), (2, "NoSuchKey"));
-/// ```
+#[cfg_attr(feature = "poor", doc = r##"
+Short hand notation describes a physical key chord as `(modifiers: u8,
+key_code: &str)`.
+
+Specify a key and any modifiers.
+
+```
+# use keyseq_macros::poor_pkey as pkey;
+assert_eq!(pkey!(A), (0, "A"));
+assert_eq!(pkey!(ctrl-A), (1, "A"));
+assert_eq!(pkey!(alt-A), (2, "A"));
+assert_eq!(pkey!(shift-A), (4, "A"));
+assert_eq!(pkey!(super-A), (8, "A"));
+assert_eq!(pkey!(ctrl-alt-;), (3, "Semicolon"));
+assert_eq!(pkey!(1), (0, "Key1"));
+assert_eq!(pkey!(alt-1), (2, "Key1"));
+```
+
+More than one key will cause a panic at compile-time. Use keyseq! for that.
+
+```compile_fail
+# use keyseq_macros::poor_pkey as pkey;
+fn too_many_keys() {
+    let _ = pkey!(A B);
+}
+```
+
+This macro does not ensure the key names exist.
+
+```
+# use keyseq_macros::poor_pkey as pkey;
+assert_eq!(pkey!(alt-NoSuchKey), (2, "NoSuchKey"));
+```
+"##)]
 #[cfg(feature = "poor")]
 #[proc_macro_error]
 #[proc_macro]
@@ -83,32 +88,34 @@ pub fn winit_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     result.into()
 }
 
-/// Short hand notation describes a logical key chord as `(modifiers: u8,
-/// key_code: &str)`.
-///
-/// Specify a key and any modifiers.
-///
-/// ```
-/// # use keyseq_macros::poor_lkey as key;
-/// assert_eq!(key!(a), (0, "a"));
-/// assert_eq!(key!(A), (0, "A"));
-/// assert_eq!(key!(ctrl-A), (1, "A"));
-/// assert_eq!(key!(alt-A), (2, "A"));
-/// assert_eq!(key!(shift-A), (4, "A"));
-/// assert_eq!(key!(super-A), (8, "A"));
-/// assert_eq!(key!(ctrl-alt-;), (3, ";"));
-/// assert_eq!(key!(1), (0, "1"));
-/// assert_eq!(key!(alt-1), (2, "1"));
-/// ```
-///
-/// More than one key will cause a panic at compile-time. Use keyseq! for that.
-///
-/// ```compile_fail
-/// # use keyseq_macros::poor_key as key;
-/// fn too_many_keys() {
-///     let _ = key!(A B);
-/// }
-/// ```
+#[cfg_attr(feature = "poor", doc = r##"
+Short hand notation describes a logical key chord as `(modifiers: u8,
+key_code: &str)`.
+
+Specify a key and any modifiers.
+
+```
+# use keyseq_macros::poor_lkey as key;
+assert_eq!(key!(a), (0, "a"));
+assert_eq!(key!(A), (0, "A"));
+assert_eq!(key!(ctrl-A), (1, "A"));
+assert_eq!(key!(alt-A), (2, "A"));
+assert_eq!(key!(shift-A), (4, "A"));
+assert_eq!(key!(super-A), (8, "A"));
+assert_eq!(key!(ctrl-alt-;), (3, ";"));
+assert_eq!(key!(1), (0, "1"));
+assert_eq!(key!(alt-1), (2, "1"));
+```
+
+More than one key will cause a panic at compile-time. Use keyseq! for that.
+
+```compile_fail
+# use keyseq_macros::poor_key as key;
+fn too_many_keys() {
+    let _ = key!(A B);
+}
+```
+"##)]
 #[cfg(feature = "poor")]
 #[proc_macro_error]
 #[proc_macro]
@@ -148,24 +155,25 @@ pub fn winit_lkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 //     result.into()
 // }
 
-/// Short hand notation describes a sequence of logical key chords as
-/// `[(modifiers: u8, key_code: &str)]`.
-///
-///
-/// ```
-/// use keyseq_macros::poor_pkeyseq as keyseq;
-/// assert_eq!(keyseq!(A B), [(0, "A"), (0, "B")]);
-/// assert_eq!(keyseq!(shift-A ctrl-B), [(4, "A"), (1, "B")]);
-/// ```
-///
-/// When no features are enabled, there are no smarts to check whether a key is real
-/// or not.
-///
-/// ```
-/// use keyseq_macros::poor_pkeyseq as keyseq;
-/// assert_eq!(keyseq!(A NoSuchKey), [(0, "A"), (0, "NoSuchKey")]);
-/// ```
-///
+#[cfg_attr(feature = "poor", doc = r##"
+Short hand notation describes a sequence of logical key chords as
+`[(modifiers: u8, key_code: &str)]`.
+
+```
+use keyseq_macros::poor_pkeyseq as keyseq;
+assert_eq!(keyseq!(A B), [(0, "A"), (0, "B")]);
+assert_eq!(keyseq!(shift-A ctrl-B), [(4, "A"), (1, "B")]);
+```
+
+When no features are enabled, there are no smarts to check whether a key is real
+or not.
+
+```
+use keyseq_macros::poor_pkeyseq as keyseq;
+assert_eq!(keyseq!(A NoSuchKey), [(0, "A"), (0, "NoSuchKey")]);
+```
+
+"##)]
 #[cfg(feature = "poor")]
 #[proc_macro_error]
 #[proc_macro]
@@ -237,6 +245,7 @@ pub fn winit_lkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     .into()
 }
 
+#[cfg(any(feature = "winit", feature = "bevy", feature = "poor"))]
 fn read_key_chords<F, G>(mut input: TokenStream, to_modifiers: F, get_key: G) -> Vec<TokenStream>
 where
     F: Fn(u8) -> TokenStream,
@@ -255,12 +264,14 @@ where
     keys
 }
 
+#[cfg(feature = "poor")]
 fn key_code_path(id: Ident) -> TokenStream {
     let x = format!("{}", id);
     let s = proc_macro2::Literal::string(&x);
     quote! { #s }
 }
 
+#[cfg(feature = "poor")]
 fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
     match tree {
         TokenTree::Literal(ref literal) => {
@@ -356,12 +367,14 @@ fn to_keyseq_modifiers(bitflags: u8) -> TokenStream {
     quote! { ::keyseq::Modifiers(#x) }
 }
 
+#[cfg(feature = "poor")]
 #[allow(unused_variables)]
 fn to_modifiers_u8(bitflags: u8) -> TokenStream {
     let x = proc_macro2::Literal::u8_suffixed(bitflags);
     quote! { #x }
 }
 
+#[cfg(feature = "poor")]
 fn get_key(tree: TokenTree) -> Option<TokenStream> {
     get_key_raw(tree).map(|r| match r {
         Ok(c) => {
@@ -375,6 +388,7 @@ fn get_key(tree: TokenTree) -> Option<TokenStream> {
     })
 }
 
+#[cfg(any(feature = "poor", feature = "winit"))]
 fn get_key_raw(tree: TokenTree) -> Option<Result<char, Cow<'static, str>>> {
     match tree {
         TokenTree::Literal(ref literal) => {
@@ -404,6 +418,7 @@ fn get_key_raw(tree: TokenTree) -> Option<Result<char, Cow<'static, str>>> {
     }
 }
 
+#[cfg(any(feature = "winit", feature = "bevy", feature = "poor"))]
 fn read_modifiers<F: Fn(u8) -> TokenStream>(
     input: TokenStream,
     to_modifiers: F,
@@ -473,6 +488,7 @@ fn read_modifiers<F: Fn(u8) -> TokenStream>(
     )
 }
 
+#[cfg(any(feature = "winit", feature = "bevy", feature = "poor"))]
 fn read_key<F: Fn(TokenTree) -> Option<TokenStream>>(
     input: TokenStream,
     get_key: F,
@@ -489,6 +505,7 @@ fn read_key<F: Fn(TokenTree) -> Option<TokenStream>>(
     )
 }
 
+#[cfg(any(feature = "winit", feature = "bevy", feature = "poor"))]
 fn read_key_chord<F, G>(
     input: TokenStream,
     to_modifiers: F,
