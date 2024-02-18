@@ -1,12 +1,11 @@
 [package]
 name = "keyseq_macros"
-description = "Short-hand notation for key chords, e.g., ctrl-A"
+description = "Specify key chords using `ctrl-A` short-hand macros"
 version = "0.1.0"
 edition = "2021"
 authors = ["Shane Celis <shane.celis@gmail.com>"]
 keywords = [
-    "game",
-    "gamedev",
+    "keyboard",
     "bevy",
     "winit",
     "input-sequence",
@@ -15,7 +14,8 @@ keywords = [
     "key-sequence"
 ]
 categories = [
-    "game-engines",
+    "input",
+    "gui"
 ]
 readme = "README.md"
 license = "MIT OR Apache-2.0"
