@@ -6,7 +6,22 @@ name = "keyseq"
 version = "0.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
-
+authors = ["Shane Celis <shane.celis@gmail.com>"]
+keywords = [
+    "keyboard"
+    "bevy",
+    "winit",
+    "input",
+    "hotkey",
+    "cheat-code",
+    "key-sequence"
+]
+categories = [
+    "input",
+    "gui"
+]
+repository = "https://github.com/shanecelis/keyseq"
+readme = "README.md"
 [badges]
 maintenance = { status = "actively-developed" }
 
