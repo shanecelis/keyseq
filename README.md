@@ -12,9 +12,8 @@ Specify key chords using `ctrl-A` short-hand, supports [bevy](https://bevyengine
 * Specify key chords in code the same way as they are specified in
   documentation.
 
-* For the sake of finding key chords in code, prefer one way of
-  describing the keys, e.g., accept "ctrl-A"; do not accept "control-A" or "C-A"
-  or "Ctrl+A".
+* For the sake of finding key chords in code, prefer one way of describing the
+  keys, e.g., accept "ctrl-A"; do not accept "control-A" or "C-A" or "Ctrl+A".
 
 # Install
 
@@ -57,7 +56,7 @@ assert_eq!(pkey! { alt-A },      (Modifiers::ALT,     KeyCode::KeyA));
 assert_eq!(pkey! { shift-A },    (Modifiers::SHIFT,   KeyCode::KeyA));
 assert_eq!(pkey! { super-A },    (Modifiers::SUPER,   KeyCode::KeyA));
 assert_eq!(pkey! { ctrl-alt-; }, (Modifiers::ALT |
-                                 Modifiers::CONTROL, KeyCode::Semicolon));
+                                  Modifiers::CONTROL, KeyCode::Semicolon));
 ```
 
 ### Physical Key Sequences
@@ -85,7 +84,7 @@ assert_eq!(lkey! { alt-a },      (Modifiers::ALT,     Key::Character('a')));
 assert_eq!(lkey! { shift-a },    (Modifiers::SHIFT,   Key::Character('a')));
 assert_eq!(lkey! { super-a },    (Modifiers::SUPER,   Key::Character('a')));
 assert_eq!(lkey! { ctrl-alt-; }, (Modifiers::ALT |
-                                 Modifiers::CONTROL, Key::Character(';')));
+                                  Modifiers::CONTROL, Key::Character(';')));
 ```
 
 ### Logical Key Sequences
@@ -94,7 +93,7 @@ assert_eq!(lkey! { ctrl-alt-; }, (Modifiers::ALT |
 # use winit::keyboard::Key;
 use keyseq::winit::lkeyseq;
 assert_eq!(lkeyseq! { a ctrl-b }, [(Modifiers::NONE,    Key::Character('a')),
-                                  (Modifiers::CONTROL, Key::Character('b'))]);
+                                   (Modifiers::CONTROL, Key::Character('b'))]);
 ```
 
 ### No lower case physical keys
@@ -134,7 +133,7 @@ the same thing:
 // keyseq::bevy::pkey! { ctrl-alt-A } desugars to
 ( Modifiers::CONTROL 
 | Modifiers::ALT 
-| Modifiers::empty(), bevy::prelude::KeyCode::KeyA)
+| Modifiers::empty(),      bevy::prelude::KeyCode::KeyA)
 ```
 
 However, this these bitflags put together with bit-or pipes had a problem with
@@ -143,11 +142,12 @@ match expressions.
 ```ignore
 let modifiers: ModifiersState = ...;
 match (modifiers.into(), key_code) {
-    // pkey! { ctrl-alt-A }                  => println!("Just pressed ctrl-alt-A!"),
+    // pkey! { ctrl-alt-A }    => println!("Just pressed ctrl-alt-A!"),
     // desugared to
     (ModifiersState::CONTROL | 
      ModifiersState::ALT | 
-     ModifiersState::empty(), KeyCode::KeyA) => println!("Just pressed ctrl-alt-A!"),
+     ModifiersState::empty(), 
+     KeyCode::KeyA)            => println!("Just pressed ctrl-alt-A!"),
 ```
 
 When desugared the bit-or `|` is now interpretered as a match-or `|`, which does
@@ -219,7 +219,7 @@ cargo run --example bevy --features bevy
 
 # Notes
 
-## Notation 
+## Macro Notation 
 
 Although using parens will work `pkey!(ctrl-alt-A)`, rustfmt will add spaces
 around the hyphen changing it to `pkey!(ctrl - alt - A)`. Therefore, it's
