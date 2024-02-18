@@ -183,13 +183,13 @@ Bevy doesn't have a logical key representation so there are no `lkey!` and
 ```
 use bevy::prelude::KeyCode;
 use keyseq::{Modifiers, bevy::pkey};
-assert_eq!(pkey! { ctrl-A },    (Modifiers::CONTROL, KeyCode::A));
-assert_eq!(pkey! { alt-A },     (Modifiers::ALT,     KeyCode::A));
-assert_eq!(pkey! { shift-A },   (Modifiers::SHIFT,   KeyCode::A));
-assert_eq!(pkey! { super-A },   (Modifiers::SUPER,   KeyCode::A));
+assert_eq!(pkey! { ctrl-A },    (Modifiers::CONTROL, KeyCode::KeyA));
+assert_eq!(pkey! { alt-A },     (Modifiers::ALT,     KeyCode::KeyA));
+assert_eq!(pkey! { shift-A },   (Modifiers::SHIFT,   KeyCode::KeyA));
+assert_eq!(pkey! { super-A },   (Modifiers::SUPER,   KeyCode::KeyA));
 assert_eq!(pkey! { ctrl-shift-A }, 
                                 (Modifiers::SHIFT |
-                                 Modifiers::CONTROL, KeyCode::A));
+                                 Modifiers::CONTROL, KeyCode::KeyA));
 ```
 
 # Features
@@ -225,6 +225,13 @@ Although using parens will work `pkey!(ctrl-alt-A)`, rustfmt will add spaces
 around the hyphen changing it to `pkey!(ctrl - alt - A)`. Therefore, it's
 suggested to use curly braces `pkey! { ctrl-alt-A }` which are not reformatted
 like that.
+
+## Compatibility
+
+| keyseq | bevy   | winit  |
+| ------ | ------ | ------ |
+| 0.1.0  | 0.12.* | 0.29.* |
+| 0.2.0  | 0.13.* | 0.29.* |
 
 # License
 

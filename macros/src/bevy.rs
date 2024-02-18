@@ -22,7 +22,7 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
             let x = literal.span().source_text().unwrap();
             if x.len() == 1 && x.parse::<u8>().is_ok() {
                 eprintln!("got numeric literal {:?}", x);
-                Some(Ident::new(&format!("Key{x}"), Span::call_site()))
+                Some(Ident::new(&format!("Digit{x}"), Span::call_site()))
                 // Some(Ident::new("Keyx", Span::call_site()))
             } else {
                 let name = match x.as_str() {
@@ -64,7 +64,7 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
             let label = ident.span().source_text().unwrap();
             if label.len() == 1 {
                 let name: Option<Cow<'static, str>> = match label.chars().next().unwrap() {
-                    'A'..='Z' => Some(label.into()),
+                    x @ 'A'..='Z' => Some(format!("Key{x}").into()),
                     x @ 'a'..='z' => {
                         abort!(x, "Use uppercase key names for physical keys");
                         // let s = x.to_ascii_uppercase().to_string();

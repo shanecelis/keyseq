@@ -1,6 +1,6 @@
 //! keyseq macros for bevy game engine
 use super::Modifiers;
-use ::bevy::input::{keyboard::KeyCode, Input};
+use ::bevy::input::{keyboard::KeyCode, ButtonInput as Input};
 
 impl Modifiers {
     /// Check modifier keys for `any_pressed()` to populate bit flags.
@@ -43,14 +43,14 @@ impl From<KeyCode> for Modifiers {
 /// ```
 /// use keyseq::{Modifiers, bevy::pkey};
 /// use bevy::prelude::KeyCode;
-/// assert_eq!(pkey!(A), (Modifiers::empty(), KeyCode::A));
-/// assert_eq!(pkey!(ctrl-A), (Modifiers::CONTROL, KeyCode::A));
-/// assert_eq!(pkey!(alt-A), (Modifiers::ALT, KeyCode::A));
-/// assert_eq!(pkey!(shift-A), (Modifiers::SHIFT, KeyCode::A));
-/// assert_eq!(pkey!(super-A), (Modifiers::SUPER, KeyCode::A));
-/// assert_eq!(pkey!(ctrl-alt-;), (Modifiers::CONTROL | Modifiers::ALT, KeyCode::Semicolon));
-/// assert_eq!(pkey!(1), (Modifiers::empty(), KeyCode::Key1));
-/// assert_eq!(pkey!(alt-1), (Modifiers::ALT, KeyCode::Key1));
+/// assert_eq!(pkey! { A },          (Modifiers::NONE, KeyCode::KeyA));
+/// assert_eq!(pkey! { ctrl-A },     (Modifiers::CONTROL, KeyCode::KeyA));
+/// assert_eq!(pkey! { alt-A },      (Modifiers::ALT, KeyCode::KeyA));
+/// assert_eq!(pkey! { shift-A },    (Modifiers::SHIFT, KeyCode::KeyA));
+/// assert_eq!(pkey! { super-A },    (Modifiers::SUPER, KeyCode::KeyA));
+/// assert_eq!(pkey! { ctrl-alt-; }, (Modifiers::CONTROL | Modifiers::ALT, KeyCode::Semicolon));
+/// assert_eq!(pkey! { 1 },          (Modifiers::NONE, KeyCode::Digit1));
+/// assert_eq!(pkey! { alt-1 },      (Modifiers::ALT, KeyCode::Digit1));
 /// ```
 ///
 /// More than one key will cause a panic at compile-time. Use keyseq! for that.
@@ -58,7 +58,7 @@ impl From<KeyCode> for Modifiers {
 /// ```compile_fail
 /// # use keyseq::bevy::pkey;
 /// fn too_many_keys() {
-///     let _ = pkey!(A B);
+///     let _ = pkey! { A B };
 /// }
 /// ```
 ///
@@ -67,7 +67,7 @@ impl From<KeyCode> for Modifiers {
 /// ```compile_fail
 /// use keyseq::bevy::pkey;
 /// use bevy::prelude::KeyCode;
-/// let (mods, key) = pkey!(alt-NoSuchKey); // KeyCode::NoSuchKey does not exist.
+/// let (mods, key) = pkey! { alt-NoSuchKey }; // KeyCode::NoSuchKey does not exist.
 /// ```
 /// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
 pub use keyseq_macros::bevy_pkey as pkey;
