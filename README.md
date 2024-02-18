@@ -19,38 +19,25 @@ Specify key chords using `ctrl-A` short-hand, supports [bevy](https://bevyengine
 # Install
 
 ``` sh
-cargo add keyseq --features bevy
+cargo add keyseq --features bevy; # OR --features winit
 ```
 
-OR 
+# Principal Macros
 
-``` sh
-cargo add keyseq --features winit
-```
+* The `pkey!` macro specifies a physical key chord, e.g., `pkey!{ ctrl-A }`.
+* The `pkeyseq!` macro specifies a physical key chord sequence, e.g., `pkeyseq!{ ctrl-A alt-B C }`.
+* The `lkey!` macro specifies a logical key chord, .e.g, `lkey!{ ctrl-a }`.
+* The `lkeyseq!` macro specifies a logical key chord sequence, e.g. `lkeyseq!{ ctrl-a alt-b c }`.
 
 # Concepts
 
-* Logical keys are specified by what the key does. If pressing the key produces
-  a 'q', then it is logically a 'q' key.
-* Physical keys are specified by the scan code the keyboard emits; they do
-  not change. There is a physical 'Q' key, often to the right of the tab key.
-  There is no physical lower-case 'q' key.
+* A physical key denotes a particular key on the keyboard. It emits a key code
+  that does not change no matter what modifiers are held down. For instance
+  there is a physical 'Q' key, often to the right of the tab key. There is no
+  physical lower-case 'q' key.
+* A logical key is specified by the key produces. If pressing the key produces
+  a 'q' character, then it is logically a 'q' key.
   
-# Principal Macros
-
-* The `key!` macro specifies a logical key chord.
-* The `lkeyseq!` macro specifies a logical key chord sequence.
-* The `pkey!` macro specifies a physical key chord.
-* The `pkeyseq!` macro specifies a physical key chord sequence.
-
-# Features
-
-* winit, include support for winit
-* bevy, include support for bevy
-* poor, an anemic representation for internal testing
-* strict-order, use a strict order for modifiers: ctrl, alt, shift, super
-  (enabled by default)
-
 # Usage
 
 ## Winit
@@ -231,6 +218,14 @@ assert_eq!(lkeyseq!{ shift-A shift-B }, [(4, "A"), (4, "B")]);
 These particular representations are impractical since one would need to
 interrogate untyped bitflags and string. The real use case requires features.
 
+# Features
+
+* winit, include support for winit
+* bevy, include support for bevy
+* poor, an anemic representation for internal testing
+* strict-order, use a strict order for modifiers: ctrl, alt, shift, super
+  (enabled by default)
+
 # Examples
 
 For both examples press `A` with modifiers and it will print a message showing
@@ -239,13 +234,13 @@ what keychord matched.
 ## Winit Example
 
 ``` sh
-cargo run --example winit
+cargo run --example winit --features winit
 ```
 
 ## Bevy Example
 
 ``` sh
-cargo run --example bevy
+cargo run --example bevy --features bevy
 ```
 
 # License

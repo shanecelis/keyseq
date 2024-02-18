@@ -72,8 +72,8 @@ impl From<KeyCode> for Modifiers {
 /// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
 pub use keyseq_macros::bevy_pkey as pkey;
 
-/// Short hand notation describes a sequence of physical key chord as `[(modifiers:
-/// `[Modifiers]`, key: `[bevy::prelude::KeyCode][keycode]`)]`.
+/// Short hand notation describes a sequence of physical key chords as
+/// `[(modifiers: `[Modifiers]`, key: `[bevy::prelude::KeyCode][keycode]`)]`.
 ///
 /// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
 pub use keyseq_macros::bevy_pkeyseq as pkeyseq;

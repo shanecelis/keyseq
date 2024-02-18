@@ -8,7 +8,7 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 authors = ["Shane Celis <shane.celis@gmail.com>"]
 keywords = [
-    "keyboard"
+    "keyboard",
     "bevy",
     "winit",
     "input",

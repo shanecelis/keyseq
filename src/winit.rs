@@ -3,9 +3,8 @@ use ::winit::keyboard::ModifiersState;
 use crate::Modifiers;
 
 /// Short hand notation describes a logical key chord as `(modifiers:`
-/// [winit::keyboard::ModifiersState][mods]`, key: `[winit::keyboard::Key][key]`)`.
+/// [Modifiers]`, key: `[winit::keyboard::Key][key]`)`.
 ///
-/// [mods]: https://docs.rs/winit/latest/winit/keyboard/struct.ModifiersState.html
 /// [key]: https://docs.rs/winit/latest/winit/keyboard/enum.Key.html
 /// ```
 /// use keyseq::{Modifiers, winit::lkey as key};
@@ -24,17 +23,21 @@ use crate::Modifiers;
 /// ups from character to name.
 ///
 /// ```compile_fail
-/// # use keyseq_macros::winit_lkey as lkey;
-/// use winit::keyboard::{ModifiersState, Key};
-/// assert_eq!(lkey!(ctrl-Semicolon), (ModifiersState::CONTROL, Key::Character(';')));
+/// # use keyseq::{Modifiers, winit::lkey};
+/// use winit::keyboard::Key;
+/// assert_eq!(lkey!(ctrl-Semicolon), (Modifiers::CONTROL, Key::Character(';')));
 /// ```
 pub use keyseq_macros::winit_lkey as lkey;
+
+/// Short hand notation describes a sequence of logical key chords as `[(modifiers:
+/// `[Modifiers]`, key: `[winit::keyboard::Key][key]`)]`.
+///
+/// [key]: https://docs.rs/winit/latest/winit/keyboard/enum.Key.html
 pub use keyseq_macros::winit_lkeyseq as lkeyseq;
 
 /// Short hand notation describes a physical key chord as `(modifiers:`
-/// [winit::keyboard::ModifiersState][mods]`, key_code: `[winit::keyboard::KeyCode][keycode]`)`.
+/// [Modifiers]`, key_code: `[winit::keyboard::KeyCode][keycode]`)`.
 ///
-/// [mods]: https://docs.rs/winit/latest/winit/keyboard/struct.ModifiersState.html
 /// [keycode]: https://docs.rs/winit/latest/winit/keyboard/enum.KeyCode.html
 /// ```
 /// use keyseq::{Modifiers, winit::pkey as pkey};
@@ -42,6 +45,10 @@ pub use keyseq_macros::winit_lkeyseq as lkeyseq;
 /// assert_eq!(pkey!(A), (Modifiers::NONE, KeyCode::KeyA));
 /// ```
 pub use keyseq_macros::winit_pkey as pkey;
+/// Short hand notation describes a sequence of physical key chords as `[(modifiers:`
+/// [Modifiers]`, key_code: `[winit::keyboard::KeyCode][keycode]`)]`.
+///
+/// [keycode]: https://docs.rs/winit/latest/winit/keyboard/enum.KeyCode.html
 pub use keyseq_macros::winit_pkeyseq as pkeyseq;
 
 impl From<ModifiersState> for Modifiers {
