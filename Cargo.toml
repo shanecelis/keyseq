@@ -12,10 +12,7 @@ keywords = [
     "keyboard",
     "bevy",
     "winit",
-    "input",
     "hotkey",
-    "cheat-code",
-    "key-sequence"
 ]
 categories = [
     "input",
