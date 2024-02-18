@@ -4,10 +4,10 @@ use winit::{
     dpi::LogicalSize,
     event::{ElementState, Event, WindowEvent},
     event_loop::EventLoop,
-    keyboard::{Key, ModifiersState, PhysicalKey, KeyCode},
+    keyboard::{ModifiersState, PhysicalKey},
     // WARNING: This is not available on all platforms (for example on the web).
-    platform::modifier_supplement::KeyEventExtModifierSupplement,
-    window::{Window, WindowBuilder},
+    // platform::modifier_supplement::KeyEventExtModifierSupplement,
+    window::WindowBuilder,
 };
 use keyseq::winit::pkey;
 
@@ -16,6 +16,7 @@ fn main() {
     println!("This example is not supported on this platform");
 }
 
+#[rustfmt::skip]
 #[cfg(any(target_os = "macos", target_os = "windows", target_os = "linux"))]
 fn main() -> Result<(), impl std::error::Error> {
     println!("Press A key with different modifier keys.");
@@ -38,7 +39,6 @@ fn main() -> Result<(), impl std::error::Error> {
                 WindowEvent::KeyboardInput { event, .. } => {
                     if event.state == ElementState::Pressed && !event.repeat {
                         if let PhysicalKey::Code(key_code) = event.physical_key {
-                            #[rustfmt::skip]
                             match (modifiers.into(), key_code) {
                                 pkey!(ctrl-A) | pkey!(super-A) => println!("Just pressed ctrl-A or super-A!"),
                                 pkey!(ctrl-alt-A)              => println!("Just pressed ctrl-alt-A!"),

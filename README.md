@@ -51,10 +51,12 @@ cargo add keyseq --features winit
 * strict-order, use a strict order for modifiers: ctrl, alt, shift, super
   (enabled by default)
 
+# Usage
+
 ## Winit
 
-With the "winit" feature the `keyseq::winit::lkey!` macro returns a
-`(ModifiersState, Key)` tuple.
+With the "winit" feature the `keyseq::winit::pkey!` macro returns a
+`(Modifiers, KeyCode)` tuple.
 
 ### Physical Keys
 
@@ -71,7 +73,20 @@ assert_eq!(pkey!{ ctrl-alt-; }, (Modifiers::ALT |
                                  Modifiers::CONTROL, KeyCode::Semicolon));
 ```
 
+### Physical Key Sequences
+
+```
+# use keyseq::Modifiers;
+# use winit::keyboard::KeyCode;
+use keyseq::winit::pkeyseq;
+assert_eq!(pkeyseq!{ A ctrl-B }, [(Modifiers::NONE,    KeyCode::KeyA),
+                                  (Modifiers::CONTROL, KeyCode::KeyB)]);
+```
+
 ### Logical Keys
+
+With the "winit" feature the `keyseq::winit::lkey!` macro returns a
+`(Modifiers, Key)` tuple.
 
 ```
 use keyseq::{Modifiers, winit::lkey};
@@ -115,13 +130,68 @@ produce compiler errors. Without the feature, it will emit warnings.
 let _ = pkey!{ alt-ctrl-A }; // error: Modifiers must occur in this order: control, alt, shift, super.
 ```
 
+### Why not use `winit::keyboard::ModifiersState`?
+
+Why return `keyseq::Modifiers` and not `winit`'s own `ModifiersState`? Both
+`keyseq::Modifiers` and `winit::keyboard::ModifiersState` are generated using
+the [bitflags](https://docs.rs/bitflags/latest/bitflags/) crate. Originally this
+crate did return `winit`'s native modifiers struct because it desugared to nearly
+the same thing:
+
+```ignore
+// keyseq::winit::pkey!{ ctrl-alt-A } desugared to
+( ModifiersState::CONTROL 
+| ModifiersState::ALT 
+| ModifiersState::empty(), winit::keyboard::KeyCode::KeyA)
+
+// keyseq::bevy::pkey!{ ctrl-alt-A } desugars to
+( Modifiers::CONTROL 
+| Modifiers::ALT 
+| Modifiers::empty(), bevy::prelude::KeyCode::KeyA)
+```
+
+However, this these bitflags put together with bit-or pipes had a problem with
+match expressions.
+
+```ignore
+let modifiers: ModifiersState = ...;
+match (modifiers.into(), key_code) {
+    // pkey!(ctrl-alt-A)                     => println!("Just pressed ctrl-alt-A!"),
+    // desugared to
+    (ModifiersState::CONTROL | 
+     ModifiersState::ALT | 
+     ModifiersState::empty(), KeyCode::KeyA) => println!("Just pressed ctrl-alt-A!"),
+```
+
+When desugared the bit-or `|` is now interpretered as a match-or `|`, which does
+not match `ctrl-alt`; it only matches `ctrl` or `alt` or no modifiers. (This
+actually seems like a pretty big expressive deficiency for `bitflags` generated
+structs.)
+
+To avoid this problem `keyseq::Modifiers` is defined as `Modifiers(pub u8)` and
+the bitflags are computed in the macro. That allows the following match
+expressions to work as expected.
+
+```ignore
+match (modifiers.into(), key_code) {
+    // pkey!(ctrl-alt-A)           => println!("Just pressed ctrl-alt-A!"),
+    // now desugars to
+    (Modifiers(3), KeyCode::KeyA)  => println!("Just pressed ctrl-alt-A!"),
+
+    // And we can use the match-or to match multiple keychords.
+    pkey!(ctrl-A) | pkey!(super-A) => println!("Just pressed ctrl-A or super-A!"),
+```
+
+In addition `keyseq::Modifiers` implements `From<ModifiersState>` and vice
+versa.
+
 ## Bevy
 
 With the "bevy" feature the `keyseq::bevy::pkey!` macro returns a
 `(keyseq::Modifiers, KeyCode)` tuple.
 
-Note: Bevy doesn't have a modifiers bit flag like Winit does. And Bevy doesn't
-have a logical key representation yet (but there is one coming).
+Bevy doesn't have a logical key representation so there are no `lkey!` and
+`lkeyseq!` macros.
 
 ```
 use bevy::prelude::KeyCode;
@@ -137,7 +207,8 @@ assert_eq!(pkey!{ ctrl-shift-A },
 
 ## Poor
 
-The `keyseq::poor::key!` macro returns a `(u8, &str)` tuple to describe a key chord.
+With the "poor" feature the `keyseq::poor::key!` macro returns a `(u8, &str)`
+tuple to describe a key chord.
 
 ```
 use keyseq::poor::lkey;
@@ -162,22 +233,20 @@ interrogate untyped bitflags and string. The real use case requires features.
 
 # Examples
 
+For both examples press `A` with modifiers and it will print a message showing
+what keychord matched.
+
 ## Winit Example
-Run a winit-based example:
 
 ``` sh
 cargo run --example winit
 ```
-
-Press `1` or `shift-1` and it will print a message.
 
 ## Bevy Example
 
 ``` sh
 cargo run --example bevy
 ```
-
-This will show a rotating cube with the shader as its surfaces.
 
 # License
 

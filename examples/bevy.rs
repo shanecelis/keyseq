@@ -12,11 +12,11 @@ fn main() {
         .run();
 }
 
+#[rustfmt::skip]
 /// This system detects some key presses.
 fn keyboard_input_system(input: Res<Input<KeyCode>>) {
     let mods = Modifiers::from_input(&input);
     for key in input.get_just_pressed() {
-        #[rustfmt::skip]
         match (mods, key) {
             pkey!(ctrl-A) | pkey!(super-A) => println!("Just pressed ctrl-A or super-A!"),
             pkey!(ctrl-alt-A)              => println!("Just pressed ctrl-alt-A!"),
