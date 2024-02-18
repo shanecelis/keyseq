@@ -237,12 +237,11 @@ pub fn winit_lkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     .into()
 }
 
-fn read_key_chords<F, G>(input: TokenStream, to_modifiers: F, get_key: G) -> Vec<TokenStream>
+fn read_key_chords<F, G>(mut input: TokenStream, to_modifiers: F, get_key: G) -> Vec<TokenStream>
 where
     F: Fn(u8) -> TokenStream,
     G: Fn(TokenTree) -> Option<TokenStream>,
 {
-    let mut input: TokenStream = input.into();
     let mut keys = vec![];
 
     loop {
@@ -342,18 +341,7 @@ enum Modifier {
 
 impl Modifier {
     #[allow(dead_code)]
-    fn to_tokens(&self) -> TokenStream {
-        match self {
-            Modifier::None => quote! { empty() },
-            Modifier::Shift => quote! { SHIFT },
-            Modifier::Control => quote! { CONTROL },
-            Modifier::Alt => quote! { ALT },
-            Modifier::Super => quote! { SUPER },
-        }
-    }
-
-    #[allow(dead_code)]
-    fn to_bitflag(&self) -> u8 {
+    fn bitflag(&self) -> u8 {
         let mut number = *self as u8;
         if number != 0 {
             number = 1 << (number - 1);
@@ -432,7 +420,7 @@ fn read_modifiers<F: Fn(u8) -> TokenStream>(
     let mut bitflags: u8 = 0;
 
     let mut accum_mods = |modifier: Modifier| {
-        let bitflag = modifier.to_bitflag();
+        let bitflag = modifier.bitflag();
         if bitflag < bitflags {
             // emit_warning!(gcc
             // emit_call_site_warning!("Modifiers must occur in this order: control, alt, shift, super.");
