@@ -1,6 +1,6 @@
-use proc_macro2::{Ident, TokenStream, TokenTree, Span};
+use proc_macro2::{Ident, Span, TokenStream, TokenTree};
+use proc_macro_error::abort;
 use quote::quote;
-use proc_macro_error::{abort};
 use std::borrow::Cow;
 
 // pub fn get_key(tree: TokenTree) -> Option<TokenStream> {
@@ -64,9 +64,7 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
             let label = ident.span().source_text().unwrap();
             if label.len() == 1 {
                 let name: Option<Cow<'static, str>> = match label.chars().next().unwrap() {
-                    'A'..='Z' => {
-                        Some(label.into())
-                    }
+                    'A'..='Z' => Some(label.into()),
                     x @ 'a'..='z' => {
                         abort!(x, "Use uppercase key names for physical keys");
                         // let s = x.to_ascii_uppercase().to_string();
@@ -81,7 +79,8 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
             }
         }
         _ => None,
-    }.map(key_code_path)
+    }
+    .map(key_code_path)
 }
 
 fn key_code_path(id: Ident) -> TokenStream {

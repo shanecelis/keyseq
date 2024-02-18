@@ -1,6 +1,6 @@
 //! keyseq macros for winit library
-use ::winit::keyboard::ModifiersState;
 use crate::Modifiers;
+use ::winit::keyboard::ModifiersState;
 
 /// Short hand notation describes a logical key chord as `(modifiers:`
 /// [Modifiers]`, key: `[winit::keyboard::Key][key]`)`.

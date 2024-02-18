@@ -1,8 +1,8 @@
 #![doc(html_root_url = "https://docs.rs/keyseq_macros/0.1.0")]
 #![doc = include_str!("../README.md")]
 extern crate proc_macro;
-use proc_macro2::{Ident, TokenStream, TokenTree, Span, Literal};
-use proc_macro_error::{abort, proc_macro_error, abort_call_site, emit_call_site_warning};
+use proc_macro2::{Ident, Literal, Span, TokenStream, TokenTree};
+use proc_macro_error::{abort, abort_call_site, emit_call_site_warning, proc_macro_error};
 use quote::quote;
 use std::borrow::Cow;
 
@@ -237,9 +237,10 @@ pub fn winit_lkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     .into()
 }
 
-fn read_key_chords<F,G>(input: TokenStream, to_modifiers: F, get_key: G) -> Vec<TokenStream>
-    where F: Fn(u8) -> TokenStream,
-    G: Fn(TokenTree) -> Option<TokenStream>
+fn read_key_chords<F, G>(input: TokenStream, to_modifiers: F, get_key: G) -> Vec<TokenStream>
+where
+    F: Fn(u8) -> TokenStream,
+    G: Fn(TokenTree) -> Option<TokenStream>,
 {
     let mut input: TokenStream = input.into();
     let mut keys = vec![];
@@ -258,7 +259,7 @@ fn read_key_chords<F,G>(input: TokenStream, to_modifiers: F, get_key: G) -> Vec<
 fn key_code_path(id: Ident) -> TokenStream {
     let x = format!("{}", id);
     let s = proc_macro2::Literal::string(&x);
-    quote!{ #s }
+    quote! { #s }
 }
 
 fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
@@ -309,9 +310,7 @@ fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
             let label = ident.span().source_text().unwrap();
             if label.len() == 1 {
                 let name: Option<Cow<'static, str>> = match label.chars().next().unwrap() {
-                    'A'..='Z' => {
-                        Some(label.into())
-                    }
+                    'A'..='Z' => Some(label.into()),
                     x @ 'a'..='z' => {
                         abort!(x, "Use uppercase key names for physical keys");
                         // let s = x.to_ascii_uppercase().to_string();
@@ -325,7 +324,8 @@ fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
             }
         }
         _ => None,
-    }.map(key_code_path)
+    }
+    .map(key_code_path)
 }
 
 #[allow(dead_code)]
@@ -374,13 +374,12 @@ fn to_modifiers_u8(bitflags: u8) -> TokenStream {
     quote! { #x }
 }
 
-
 fn get_key(tree: TokenTree) -> Option<TokenStream> {
     get_key_raw(tree).map(|r| match r {
         Ok(c) => {
             let l = Literal::string(&c.to_string());
             quote! { #l }
-        },
+        }
         Err(cow) => {
             let l = Literal::string(&cow);
             quote! { #l }
@@ -404,9 +403,7 @@ fn get_key_raw(tree: TokenTree) -> Option<Result<char, Cow<'static, str>>> {
                 Some(Err(name.map(|n| n.to_string()).unwrap_or(x).into()))
             }
         }
-        TokenTree::Punct(ref punct) => {
-            Some(Ok(punct.as_char()))
-        }
+        TokenTree::Punct(ref punct) => Some(Ok(punct.as_char())),
         TokenTree::Ident(ref ident) => {
             let label = ident.span().source_text().unwrap();
             if label.len() == 1 {
@@ -419,7 +416,10 @@ fn get_key_raw(tree: TokenTree) -> Option<Result<char, Cow<'static, str>>> {
     }
 }
 
-fn read_modifiers<F: Fn(u8) -> TokenStream>(input: TokenStream, to_modifiers: F) -> (TokenStream, TokenStream) {
+fn read_modifiers<F: Fn(u8) -> TokenStream>(
+    input: TokenStream,
+    to_modifiers: F,
+) -> (TokenStream, TokenStream) {
     let mut i = input.into_iter().peekable();
     let mut last_tree = None;
 
@@ -439,7 +439,9 @@ fn read_modifiers<F: Fn(u8) -> TokenStream>(input: TokenStream, to_modifiers: F)
             if cfg!(feature = "strict-order") {
                 abort_call_site!("Modifiers must occur in this order: control, alt, shift, super.");
             } else {
-                emit_call_site_warning!("Modifiers must occur in this order: control, alt, shift, super.");
+                emit_call_site_warning!(
+                    "Modifiers must occur in this order: control, alt, shift, super."
+                );
             }
         }
         bitflags |= bitflag;
@@ -460,7 +462,7 @@ fn read_modifiers<F: Fn(u8) -> TokenStream>(input: TokenStream, to_modifiers: F)
                 },
                 TokenTree::Punct(ref punct) => match punct.as_char() {
                     // We could allow + notation too.
-                    '-' => {},
+                    '-' => {}
                     x => abort!(x, "Should be a modifier or a hyphen"),
                 },
                 x => abort!(x, "Should be a modifier or a hyphen"),
@@ -483,7 +485,10 @@ fn read_modifiers<F: Fn(u8) -> TokenStream>(input: TokenStream, to_modifiers: F)
     )
 }
 
-fn read_key<F: Fn(TokenTree) -> Option<TokenStream>>(input: TokenStream, get_key: F) -> (TokenStream, TokenStream) {
+fn read_key<F: Fn(TokenTree) -> Option<TokenStream>>(
+    input: TokenStream,
+    get_key: F,
+) -> (TokenStream, TokenStream) {
     let mut i = input.into_iter();
     let tree = i.next().expect("No token tree");
     // eprintln!("tree {:?}", &tree);
@@ -496,9 +501,14 @@ fn read_key<F: Fn(TokenTree) -> Option<TokenStream>>(input: TokenStream, get_key
     )
 }
 
-fn read_key_chord<F,G>(input: TokenStream, to_modifiers: F, get_key: G) -> (TokenStream, TokenStream)
-    where F:Fn(u8) -> TokenStream,
-    G: Fn(TokenTree) -> Option<TokenStream>
+fn read_key_chord<F, G>(
+    input: TokenStream,
+    to_modifiers: F,
+    get_key: G,
+) -> (TokenStream, TokenStream)
+where
+    F: Fn(u8) -> TokenStream,
+    G: Fn(TokenTree) -> Option<TokenStream>,
 {
     let (mods, input) = read_modifiers(input, to_modifiers);
     let (key, rest) = read_key(input, get_key);
@@ -506,6 +516,6 @@ fn read_key_chord<F,G>(input: TokenStream, to_modifiers: F, get_key: G) -> (Toke
         quote! {
             (#mods, #key)
         },
-        rest
+        rest,
     )
 }

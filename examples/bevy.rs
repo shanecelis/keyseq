@@ -1,7 +1,7 @@
 //! A simple 3D scene with light shining over a cube sitting on a plane.
 
 use bevy::prelude::*;
-use keyseq::{Modifiers, bevy::pkey};
+use keyseq::{bevy::pkey, Modifiers};
 
 fn main() {
     println!("Press A key with different modifier keys.");

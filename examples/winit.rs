@@ -1,4 +1,5 @@
 #![allow(clippy::single_match)]
+use keyseq::winit::pkey;
 #[cfg(any(target_os = "macos", target_os = "windows", target_os = "linux"))]
 use winit::{
     dpi::LogicalSize,
@@ -9,7 +10,6 @@ use winit::{
     // platform::modifier_supplement::KeyEventExtModifierSupplement,
     window::WindowBuilder,
 };
-use keyseq::winit::pkey;
 
 #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
 fn main() {

@@ -4,8 +4,34 @@ use bitflags::bitflags;
 use std::fmt;
 
 /// keyseq macros that are a "poor" representation but useful for internal tests.
+#[rustfmt::skip]
 #[cfg(feature = "poor")]
 pub mod poor {
+//! ## Poor
+//!
+//! With the "poor" feature the `keyseq::poor::key!` macro returns a `(u8, &str)`
+//! tuple to describe a key chord.
+//!
+//! ```
+//! use keyseq::poor::lkey;
+//! assert_eq!(lkey! { A },       (0, "A"));
+//! assert_eq!(lkey! { ctrl-A },  (1, "A"));
+//! assert_eq!(lkey! { alt-A },   (2, "A"));
+//! assert_eq!(lkey! { shift-A }, (4, "A"));
+//! assert_eq!(lkey! { super-A }, (8, "A"));
+//! ```
+//!
+//! The `keyseq::poor::lkeyseq!` macro returns a `[(u8, &str)]` array to describe a key
+//! chord sequence.
+//!
+//! ```
+//! use keyseq::poor::lkeyseq;
+//! assert_eq!(lkeyseq! { A B },             [(0, "A"), (0, "B")]);
+//! assert_eq!(lkeyseq! { shift-A shift-B }, [(4, "A"), (4, "B")]);
+//! ```
+//!
+//! These particular representations are impractical since one would need to
+//! interrogate untyped bitflags and string. The real use case requires features.
     pub use keyseq_macros::{poor_lkey as lkey,
                             poor_lkeyseq as lkeyseq,
                             poor_pkey as pkey,
@@ -32,12 +58,8 @@ bitflags! {
     }
 }
 
-
 impl fmt::Debug for Modifiers {
-    fn fmt(
-        &self,
-        f: &mut fmt::Formatter<'_>,
-    ) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         // f.debug_tuple("Modifiers")
         //     .field(&self.0)
         //     .finish()
@@ -54,10 +76,7 @@ impl fmt::Debug for Modifiers {
 }
 
 impl fmt::Display for Modifiers {
-    fn fmt(
-        &self,
-        f: &mut fmt::Formatter<'_>,
-    ) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         ::bitflags::parser::to_writer(self, f)
     }
 }
@@ -73,4 +92,3 @@ pub mod winit;
 
 #[cfg(feature = "bevy")]
 pub mod bevy;
-

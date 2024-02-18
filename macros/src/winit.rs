@@ -1,15 +1,15 @@
-use proc_macro2::{Ident, TokenStream, TokenTree, Span, Literal};
+use super::get_key_raw;
+use proc_macro2::{Ident, Literal, Span, TokenStream, TokenTree};
+use proc_macro_error::abort;
 use quote::quote;
 use std::borrow::Cow;
-use proc_macro_error::abort;
-use super::get_key_raw;
 
 pub fn get_key(tree: TokenTree) -> Option<TokenStream> {
     get_key_raw(tree).map(|r| match r {
         Ok(c) => {
             let l = Literal::character(c);
             quote! { ::winit::keyboard::Key::Character(#l) }
-        },
+        }
         Err(cow) => {
             let i = Ident::new(&cow, Span::call_site());
             quote! { ::winit::keyboard::Key::Named(::winit::keyboard::NamedKey::#i) }
@@ -85,11 +85,12 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
             }
         }
         _ => None,
-    }.map(key_code_path)
+    }
+    .map(key_code_path)
 }
 
 // pub fn to_modifiers(bitflags: u8) -> TokenStream {
-//     
+//
 //     quote! { ::winit::keyboard::ModifiersState::#id }
 // }
 

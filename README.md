@@ -24,10 +24,10 @@ cargo add keyseq --features bevy; # OR --features winit
 
 # Principal Macros
 
-* The `pkey!` macro specifies a physical key chord, e.g., `pkey!{ ctrl-A }`.
-* The `pkeyseq!` macro specifies a physical key chord sequence, e.g., `pkeyseq!{ ctrl-A alt-B C }`.
-* The `lkey!` macro specifies a logical key chord, .e.g, `lkey!{ ctrl-a }`.
-* The `lkeyseq!` macro specifies a logical key chord sequence, e.g. `lkeyseq!{ ctrl-a alt-b c }`.
+* The `pkey!` macro specifies a physical key chord, e.g., `pkey! { ctrl-A }`.
+* The `pkeyseq!` macro specifies a physical key chord sequence, e.g., `pkeyseq! { ctrl-A alt-B C }`.
+* The `lkey!` macro specifies a logical key chord, .e.g, `lkey! { ctrl-a }`.
+* The `lkeyseq!` macro specifies a logical key chord sequence, e.g. `lkeyseq! { ctrl-a alt-b c }`.
 
 # Concepts
 
@@ -51,12 +51,12 @@ With the "winit" feature the `keyseq::winit::pkey!` macro returns a
 use keyseq::{Modifiers, winit::pkey};
 use winit::keyboard::KeyCode;
 
-assert_eq!(pkey!{ A },          (Modifiers::NONE,    KeyCode::KeyA));
-assert_eq!(pkey!{ ctrl-A },     (Modifiers::CONTROL, KeyCode::KeyA));
-assert_eq!(pkey!{ alt-A },      (Modifiers::ALT,     KeyCode::KeyA));
-assert_eq!(pkey!{ shift-A },    (Modifiers::SHIFT,   KeyCode::KeyA));
-assert_eq!(pkey!{ super-A },    (Modifiers::SUPER,   KeyCode::KeyA));
-assert_eq!(pkey!{ ctrl-alt-; }, (Modifiers::ALT |
+assert_eq!(pkey! { A },          (Modifiers::NONE,    KeyCode::KeyA));
+assert_eq!(pkey! { ctrl-A },     (Modifiers::CONTROL, KeyCode::KeyA));
+assert_eq!(pkey! { alt-A },      (Modifiers::ALT,     KeyCode::KeyA));
+assert_eq!(pkey! { shift-A },    (Modifiers::SHIFT,   KeyCode::KeyA));
+assert_eq!(pkey! { super-A },    (Modifiers::SUPER,   KeyCode::KeyA));
+assert_eq!(pkey! { ctrl-alt-; }, (Modifiers::ALT |
                                  Modifiers::CONTROL, KeyCode::Semicolon));
 ```
 
@@ -66,7 +66,7 @@ assert_eq!(pkey!{ ctrl-alt-; }, (Modifiers::ALT |
 # use keyseq::Modifiers;
 # use winit::keyboard::KeyCode;
 use keyseq::winit::pkeyseq;
-assert_eq!(pkeyseq!{ A ctrl-B }, [(Modifiers::NONE,    KeyCode::KeyA),
+assert_eq!(pkeyseq! { A ctrl-B }, [(Modifiers::NONE,    KeyCode::KeyA),
                                   (Modifiers::CONTROL, KeyCode::KeyB)]);
 ```
 
@@ -79,12 +79,12 @@ With the "winit" feature the `keyseq::winit::lkey!` macro returns a
 use keyseq::{Modifiers, winit::lkey};
 use winit::keyboard::Key;
 
-assert_eq!(lkey!{ a },          (Modifiers::NONE,    Key::Character('a')));
-assert_eq!(lkey!{ ctrl-a },     (Modifiers::CONTROL, Key::Character('a')));
-assert_eq!(lkey!{ alt-a },      (Modifiers::ALT,     Key::Character('a')));
-assert_eq!(lkey!{ shift-a },    (Modifiers::SHIFT,   Key::Character('a')));
-assert_eq!(lkey!{ super-a },    (Modifiers::SUPER,   Key::Character('a')));
-assert_eq!(lkey!{ ctrl-alt-; }, (Modifiers::ALT |
+assert_eq!(lkey! { a },          (Modifiers::NONE,    Key::Character('a')));
+assert_eq!(lkey! { ctrl-a },     (Modifiers::CONTROL, Key::Character('a')));
+assert_eq!(lkey! { alt-a },      (Modifiers::ALT,     Key::Character('a')));
+assert_eq!(lkey! { shift-a },    (Modifiers::SHIFT,   Key::Character('a')));
+assert_eq!(lkey! { super-a },    (Modifiers::SUPER,   Key::Character('a')));
+assert_eq!(lkey! { ctrl-alt-; }, (Modifiers::ALT |
                                  Modifiers::CONTROL, Key::Character(';')));
 ```
 
@@ -93,7 +93,7 @@ assert_eq!(lkey!{ ctrl-alt-; }, (Modifiers::ALT |
 # use keyseq::Modifiers;
 # use winit::keyboard::Key;
 use keyseq::winit::lkeyseq;
-assert_eq!(lkeyseq!{ a ctrl-b }, [(Modifiers::NONE,    Key::Character('a')),
+assert_eq!(lkeyseq! { a ctrl-b }, [(Modifiers::NONE,    Key::Character('a')),
                                   (Modifiers::CONTROL, Key::Character('b'))]);
 ```
 
@@ -104,7 +104,7 @@ specifying the A key.
 
 ```compile_fail
 # use keyseq::winit::pkey;
-let (mods, key) = pkey!{ a }; // error: Use uppercase key names for physical keys
+let (mods, key) = pkey! { a }; // error: Use uppercase key names for physical keys
 ```
 
 ### Strict modifier order
@@ -114,7 +114,7 @@ produce compiler errors. Without the feature, it will emit warnings.
 
 ```compile_fail
 # use keyseq::winit::pkey;
-let _ = pkey!{ alt-ctrl-A }; // error: Modifiers must occur in this order: control, alt, shift, super.
+let _ = pkey! { alt-ctrl-A }; // error: Modifiers must occur in this order: control, alt, shift, super.
 ```
 
 ### Why not use `winit::keyboard::ModifiersState`?
@@ -126,12 +126,12 @@ crate did return `winit`'s native modifiers struct because it desugared to nearl
 the same thing:
 
 ```ignore
-// keyseq::winit::pkey!{ ctrl-alt-A } desugared to
+// keyseq::winit::pkey! { ctrl-alt-A } desugared to
 ( ModifiersState::CONTROL 
 | ModifiersState::ALT 
 | ModifiersState::empty(), winit::keyboard::KeyCode::KeyA)
 
-// keyseq::bevy::pkey!{ ctrl-alt-A } desugars to
+// keyseq::bevy::pkey! { ctrl-alt-A } desugars to
 ( Modifiers::CONTROL 
 | Modifiers::ALT 
 | Modifiers::empty(), bevy::prelude::KeyCode::KeyA)
@@ -143,7 +143,7 @@ match expressions.
 ```ignore
 let modifiers: ModifiersState = ...;
 match (modifiers.into(), key_code) {
-    // pkey!(ctrl-alt-A)                     => println!("Just pressed ctrl-alt-A!"),
+    // pkey! { ctrl-alt-A }                  => println!("Just pressed ctrl-alt-A!"),
     // desugared to
     (ModifiersState::CONTROL | 
      ModifiersState::ALT | 
@@ -161,12 +161,12 @@ expressions to work as expected.
 
 ```ignore
 match (modifiers.into(), key_code) {
-    // pkey!(ctrl-alt-A)           => println!("Just pressed ctrl-alt-A!"),
+    // pkey! { ctrl-alt-A }              => println!("Just pressed ctrl-alt-A!"),
     // now desugars to
-    (Modifiers(3), KeyCode::KeyA)  => println!("Just pressed ctrl-alt-A!"),
+    (Modifiers(3), KeyCode::KeyA)        => println!("Just pressed ctrl-alt-A!"),
 
     // And we can use the match-or to match multiple keychords.
-    pkey!(ctrl-A) | pkey!(super-A) => println!("Just pressed ctrl-A or super-A!"),
+    pkey! { ctrl-A } | pkey! { super-A } => println!("Just pressed ctrl-A or super-A!"),
 ```
 
 In addition `keyseq::Modifiers` implements `From<ModifiersState>` and vice
@@ -183,40 +183,14 @@ Bevy doesn't have a logical key representation so there are no `lkey!` and
 ```
 use bevy::prelude::KeyCode;
 use keyseq::{Modifiers, bevy::pkey};
-assert_eq!(pkey!{ ctrl-A },    (Modifiers::CONTROL, KeyCode::A));
-assert_eq!(pkey!{ alt-A },     (Modifiers::ALT,     KeyCode::A));
-assert_eq!(pkey!{ shift-A },   (Modifiers::SHIFT,   KeyCode::A));
-assert_eq!(pkey!{ super-A },   (Modifiers::SUPER,   KeyCode::A));
-assert_eq!(pkey!{ ctrl-shift-A }, 
-                               (Modifiers::SHIFT |
-                                Modifiers::CONTROL, KeyCode::A));
+assert_eq!(pkey! { ctrl-A },    (Modifiers::CONTROL, KeyCode::A));
+assert_eq!(pkey! { alt-A },     (Modifiers::ALT,     KeyCode::A));
+assert_eq!(pkey! { shift-A },   (Modifiers::SHIFT,   KeyCode::A));
+assert_eq!(pkey! { super-A },   (Modifiers::SUPER,   KeyCode::A));
+assert_eq!(pkey! { ctrl-shift-A }, 
+                                (Modifiers::SHIFT |
+                                 Modifiers::CONTROL, KeyCode::A));
 ```
-
-## Poor
-
-With the "poor" feature the `keyseq::poor::key!` macro returns a `(u8, &str)`
-tuple to describe a key chord.
-
-```
-use keyseq::poor::lkey;
-assert_eq!(lkey!{ A },       (0, "A"));
-assert_eq!(lkey!{ ctrl-A },  (1, "A"));
-assert_eq!(lkey!{ alt-A },   (2, "A"));
-assert_eq!(lkey!{ shift-A }, (4, "A"));
-assert_eq!(lkey!{ super-A }, (8, "A"));
-```
-
-The `keyseq::poor::lkeyseq!` macro returns a `[(u8, &str)]` array to describe a key
-chord sequence.
-
-```
-use keyseq::poor::lkeyseq;
-assert_eq!(lkeyseq!{ A B },             [(0, "A"), (0, "B")]);
-assert_eq!(lkeyseq!{ shift-A shift-B }, [(4, "A"), (4, "B")]);
-```
-
-These particular representations are impractical since one would need to
-interrogate untyped bitflags and string. The real use case requires features.
 
 # Features
 
@@ -242,6 +216,15 @@ cargo run --example winit --features winit
 ``` sh
 cargo run --example bevy --features bevy
 ```
+
+# Notes
+
+## Notation 
+
+Although using parens will work `pkey!(ctrl-alt-A)`, rustfmt will add spaces
+around the hyphen changing it to `pkey!(ctrl - alt - A)`. Therefore, it's
+suggested to use curly braces `pkey! { ctrl-alt-A }` which are not reformatted
+like that.
 
 # License
 
