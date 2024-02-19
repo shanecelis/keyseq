@@ -22,7 +22,6 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
         TokenTree::Literal(ref literal) => {
             let x = literal.span().source_text().unwrap();
             if x.len() == 1 && x.parse::<u8>().is_ok() {
-                eprintln!("got numeric literal {:?}", x);
                 Some(Ident::new(&format!("Digit{x}"), Span::call_site()))
             } else {
                 let name = match x.as_str() {

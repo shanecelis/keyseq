@@ -271,7 +271,6 @@ fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
         TokenTree::Literal(ref literal) => {
             let x = literal.span().source_text().unwrap();
             if x.len() == 1 && x.parse::<u8>().is_ok() {
-                eprintln!("got numeric literal {:?}", x);
                 Some(Ident::new(&format!("Key{x}"), Span::call_site()))
                 // Some(Ident::new("Keyx", Span::call_site()))
             } else {
@@ -489,7 +488,6 @@ fn read_key<F: Fn(TokenTree) -> Option<TokenStream>>(
 ) -> (TokenStream, TokenStream) {
     let mut i = input.into_iter();
     let tree = i.next().expect("No token tree");
-    // eprintln!("tree {:?}", &tree);
     let key = get_key(tree).expect("No key found");
     (
         quote! {
