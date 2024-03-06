@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/keyseq/0.2.1")]
+#![doc(html_root_url = "https://docs.rs/keyseq/0.2.2")]
 // The README is written with code that requires both winit and bevy features.
 #![cfg_attr(all(feature = "winit", feature = "bevy"),
             doc = include_str!("../README.md"))]

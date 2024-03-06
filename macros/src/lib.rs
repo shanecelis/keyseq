@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/keyseq_macros/0.2.1")]
+#![doc(html_root_url = "https://docs.rs/keyseq_macros/0.2.2")]
 #![doc = include_str!("../README.md")]
 extern crate proc_macro;
 #[allow(unused_imports)]
