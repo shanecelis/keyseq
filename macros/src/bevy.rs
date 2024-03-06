@@ -25,8 +25,10 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
                 // Some(Ident::new("Keyx", Span::call_site()))
             } else {
                 let name = match x.as_str() {
-                    "'\\''" => Some("Apostrophe"),
-                    "'`'" => Some("Grave"),
+                    "'['" => Some("BracketLeft"),
+                    "']'" => Some("BracketRight"),
+                    "'\\''" => Some("Quote"),
+                    "'`'" => Some("Backquote"),
                     "'\\\\'" => Some("Backslash"),
                     _ => todo!("literal char {x} {:?}", literal),
                 };
@@ -36,26 +38,35 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
         TokenTree::Punct(ref punct) => {
             let name: Option<&str> = match punct.as_char() {
                 ';' => Some("Semicolon"),
-                ':' => {
-                    // TODO: `ctrl-:` Can't be entered on a US ANSI
-                    // keyboard only `shift-;` can. Make docs clear this
-                    // is the key and not the symbol?
+                // ':' => {
+                //     // TODO: `ctrl-:` Can't be entered on a US ANSI
+                //     // keyboard only `shift-;` can. Make docs clear this
+                //     // is the key and not the symbol?
 
-                    // add_shift = true;
-                    // Some("Semicolon")
-                    Some("Colon")
-                }
+                //     // add_shift = true;
+                //     // Some("Semicolon")
+                //     Some("Colon")
+                // }
                 ',' => Some("Comma"),
                 '.' => Some("Period"),
-                '^' => Some("Caret"),
-                '=' => Some("Equals"),
+                // '^' => Some("Caret"),
+                '=' => Some("Equal"),
                 '/' => Some("Slash"),
                 '-' => Some("Minus"),
-                '*' => Some("Asterisk"),
-                '+' => Some("Plus"),
-                '@' => Some("At"),
-                // _ => None
-                _ => todo!("punct {:?}", punct),
+                // '*' => Some("Asterisk"),
+                // '+' => Some("Plus"),
+                // '@' => Some("At"),
+                x => {
+                    // if let Some(c) = x.as_ascii() {
+                    //     if c >= AsciiChar::ExclamationMark && c <= AsciiChar::PlusSign {
+                    //         abort!(x, "Use shift modifier with physical key instead of symbol produced");
+                    //     }
+                    // }
+                    if x.is_ascii() && x >= '!' && x <= '+' {
+                        abort!(x, "Use shift modifier with physical key instead of symbol produced");
+                    }
+                    todo!("punct {:?}", punct);
+                }
             };
             name.map(|n| Ident::new(n, punct.span()))
         }
