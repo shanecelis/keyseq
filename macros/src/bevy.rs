@@ -63,7 +63,10 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
                     //     }
                     // }
                     if x.is_ascii() && x >= '!' && x <= '+' {
-                        abort!(x, "Use shift modifier with physical key instead of symbol produced");
+                        abort!(
+                            x,
+                            "Use shift modifier with physical key instead of symbol produced"
+                        );
                     }
                     todo!("punct {:?}", punct);
                 }

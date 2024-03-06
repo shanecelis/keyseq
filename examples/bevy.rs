@@ -1,6 +1,6 @@
 //! A simple 3D scene with light shining over a cube sitting on a plane.
 
-use bevy::{prelude::*, input::ButtonInput as Input};
+use bevy::{input::ButtonInput as Input, prelude::*};
 use keyseq::{bevy::pkey, Modifiers};
 
 fn main() {
