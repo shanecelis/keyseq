@@ -83,7 +83,20 @@ impl fmt::Debug for Modifiers {
 
 impl fmt::Display for Modifiers {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        ::bitflags::parser::to_writer(self, f)
+        let mut accum = Vec::new();
+        if self.contains(Modifiers::CONTROL) {
+            accum.push("ctrl");
+        }
+        if self.contains(Modifiers::ALT) {
+            accum.push("alt");
+        }
+        if self.contains(Modifiers::SHIFT) {
+            accum.push("shift");
+        }
+        if self.contains(Modifiers::SUPER) {
+            accum.push("super");
+        }
+        f.write_str(&accum.join("-"))
     }
 }
 
@@ -98,3 +111,14 @@ pub mod winit;
 
 #[cfg(feature = "bevy")]
 pub mod bevy;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn display_modifiers() {
+        let mods = Modifiers(1 + 2 + 4);
+        assert_eq!(format!("{}", mods), "ctrl-alt-shift");
+
+    }
+}
