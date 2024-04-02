@@ -47,6 +47,7 @@ pub mod poor {
 /// A bit flag that stores the modifier keys--control, alt, shift, and
 /// super--in a byte.
 #[derive(Clone, Copy, PartialOrd, PartialEq, Eq, Hash, Ord)]
+#[cfg_attr(feature = "bevy", derive(bevy_reflect::Reflect))]
 pub struct Modifiers(pub u8);
 
 bitflags! {
