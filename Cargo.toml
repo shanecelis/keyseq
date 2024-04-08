@@ -4,7 +4,7 @@ members = [ "macros" ]
 [package]
 name = "keyseq"
 description = "Specify key chords using `ctrl-A` short-hand"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 authors = ["Shane Celis <shane.celis@gmail.com>"]
