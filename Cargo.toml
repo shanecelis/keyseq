@@ -4,7 +4,7 @@ members = [ "macros" ]
 [package]
 name = "keyseq"
 description = "Specify key chords using `ctrl-A` short-hand"
-version = "0.2.2"
+version = "0.3.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 authors = ["Shane Celis <shane.celis@gmail.com>"]
@@ -15,7 +15,6 @@ keywords = [
     "hotkey",
 ]
 categories = [
-    "input",
     "gui"
 ]
 repository = "https://github.com/shanecelis/keyseq"
@@ -32,13 +31,13 @@ poor = ["keyseq_macros/poor"]
 
 [dependencies]
 keyseq_macros = { version = "0.2.2", path = "macros" }
-bevy = { version = "0.13", default-features = false, optional = true }
-bevy_reflect = { version = "0.13", optional = true }
+bevy = { version = "0.14", default-features = false, optional = true }
+bevy_reflect = { version = "0.14", optional = true }
 winit = { version = "0.29.10", default-features = false, optional = true }
 bitflags = "2.4.2"
 
 [dev-dependencies]
-bevy = { version = "0.13", default-features = true }
+bevy = { version = "0.14", default-features = true }
 version-sync = "0.9"
 
 [[example]]
