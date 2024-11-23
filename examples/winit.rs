@@ -24,7 +24,7 @@ fn main() -> Result<(), impl std::error::Error> {
 
     let attributes = Window::default_attributes()
         .with_inner_size(LogicalSize::new(400.0, 200.0));
-    let window = event_loop.create_window(attributes).unwrap();
+    let _window = event_loop.create_window(attributes).unwrap();
 
     let mut modifiers = ModifiersState::default();
 

@@ -146,7 +146,6 @@ mod tests {
     #[cfg(all(feature = "poor", feature = "permit-plus"))]
     #[test]
     fn permit_plus() {
-        assert!(false);
         assert_eq!(poor::pkey! { Ctrl+A }, (1, "A"));
     }
 
