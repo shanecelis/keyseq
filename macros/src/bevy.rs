@@ -39,11 +39,11 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
             let name: Option<&str> = match punct.as_char() {
                 ';' => Some("Semicolon"),
                 // ':' => {
-                //     // TODO: `ctrl-:` Can't be entered on a US ANSI
-                //     // keyboard only `shift-;` can. Make docs clear this
+                //     // TODO: `Ctrl-:` Can't be entered on a US ANSI
+                //     // keyboard only `Shift-;` can. Make docs clear this
                 //     // is the key and not the symbol?
 
-                //     // add_shift = true;
+                //     // add_Shift = true;
                 //     // Some("Semicolon")
                 //     Some("Colon")
                 // }
@@ -59,13 +59,13 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
                 x => {
                     // if let Some(c) = x.as_ascii() {
                     //     if c >= AsciiChar::ExclamationMark && c <= AsciiChar::PlusSign {
-                    //         abort!(x, "Use shift modifier with physical key instead of symbol produced");
+                    //         abort!(x, "Use Shift modifier with physical key instead of symbol produced");
                     //     }
                     // }
-                    if x.is_ascii() && x >= '!' && x <= '+' {
+                    if x.is_ascii() && ('!'..='+').contains(&x) {
                         abort!(
                             x,
-                            "Use shift modifier with physical key instead of symbol produced"
+                            "Use Shift modifier with physical key instead of symbol produced"
                         );
                     }
                     todo!("punct {:?}", punct);

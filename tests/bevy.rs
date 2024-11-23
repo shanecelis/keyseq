@@ -5,16 +5,16 @@ mod for_bevy {
 
     #[test]
     fn check_modifiers() {
-        assert_eq!(pkey! { shift-A }, (Modifiers::SHIFT, KeyCode::KeyA));
-        assert_eq!(pkey! { shift-B }, (Modifiers::SHIFT, KeyCode::KeyB));
+        assert_eq!(pkey! { Shift-A }, (Modifiers::SHIFT, KeyCode::KeyA));
+        assert_eq!(pkey! { Shift-B }, (Modifiers::SHIFT, KeyCode::KeyB));
     }
 
     #[test]
     fn check_match() {
-        match pkey! { ctrl-shift-A } {
+        match pkey! { Ctrl-Shift-A } {
             (Modifiers(5), KeyCode::KeyA) => {}
-            pkey! { ctrl-A } => panic!(),
-            // pkey!(ctrl-shift-A) => {},
+            pkey! { Ctrl-A } => panic!(),
+            // pkey!(Ctrl-Shift-A) => {},
             _ => panic!(),
         }
     }

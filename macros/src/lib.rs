@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/keyseq_macros/0.2.2")]
+#![doc(html_root_url = "https://docs.rs/keyseq_macros/0.3.0")]
 #![doc = include_str!("../README.md")]
 extern crate proc_macro;
 #[allow(unused_imports)]
@@ -23,13 +23,13 @@ mod bevy;
 /// ```
 /// # use keyseq_macros::poor_pkey as pkey;
 /// assert_eq!(pkey!(A), (0, "A"));
-/// assert_eq!(pkey!(ctrl-A), (1, "A"));
-/// assert_eq!(pkey!(alt-A), (2, "A"));
-/// assert_eq!(pkey!(shift-A), (4, "A"));
-/// assert_eq!(pkey!(super-A), (8, "A"));
-/// assert_eq!(pkey!(ctrl-alt-;), (3, "Semicolon"));
+/// assert_eq!(pkey!(Ctrl-A), (1, "A"));
+/// assert_eq!(pkey!(Alt-A), (2, "A"));
+/// assert_eq!(pkey!(Shift-A), (4, "A"));
+/// assert_eq!(pkey!(Super-A), (8, "A"));
+/// assert_eq!(pkey!(Ctrl-Alt-;), (3, "Semicolon"));
 /// assert_eq!(pkey!(1), (0, "Key1"));
-/// assert_eq!(pkey!(alt-1), (2, "Key1"));
+/// assert_eq!(pkey!(Alt-1), (2, "Key1"));
 /// ```
 ///
 /// More than one key will cause a panic at compile-time. Use keyseq! for that.
@@ -45,7 +45,7 @@ mod bevy;
 ///
 /// ```
 /// # use keyseq_macros::poor_pkey as pkey;
-/// assert_eq!(pkey!(alt-NoSuchKey), (2, "NoSuchKey"));
+/// assert_eq!(pkey!(Alt-NoSuchKey), (2, "NoSuchKey"));
 /// ```
 #[cfg(feature = "poor")]
 #[proc_macro_error]
@@ -95,13 +95,13 @@ pub fn winit_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// # use keyseq_macros::poor_lkey as key;
 /// assert_eq!(key!(a), (0, "a"));
 /// assert_eq!(key!(A), (0, "A"));
-/// assert_eq!(key!(ctrl-A), (1, "A"));
-/// assert_eq!(key!(alt-A), (2, "A"));
-/// assert_eq!(key!(shift-A), (4, "A"));
-/// assert_eq!(key!(super-A), (8, "A"));
-/// assert_eq!(key!(ctrl-alt-;), (3, ";"));
+/// assert_eq!(key!(Ctrl-A), (1, "A"));
+/// assert_eq!(key!(Alt-A), (2, "A"));
+/// assert_eq!(key!(Shift-A), (4, "A"));
+/// assert_eq!(key!(Super-A), (8, "A"));
+/// assert_eq!(key!(Ctrl-Alt-;), (3, ";"));
 /// assert_eq!(key!(1), (0, "1"));
-/// assert_eq!(key!(alt-1), (2, "1"));
+/// assert_eq!(key!(Alt-1), (2, "1"));
 /// ```
 ///
 /// More than one key will cause a panic at compile-time. Use keyseq! for that.
@@ -157,7 +157,7 @@ pub fn winit_lkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// ```
 /// use keyseq_macros::poor_pkeyseq as keyseq;
 /// assert_eq!(keyseq!(A B), [(0, "A"), (0, "B")]);
-/// assert_eq!(keyseq!(shift-A ctrl-B), [(4, "A"), (1, "B")]);
+/// assert_eq!(keyseq!(Shift-A Ctrl-B), [(4, "A"), (1, "B")]);
 /// ```
 ///
 /// When no features are enabled, there are no smarts to check whether a key is real
@@ -287,11 +287,11 @@ fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
             let name: Option<&str> = match punct.as_char() {
                 ';' => Some("Semicolon"),
                 ':' => {
-                    // TODO: `ctrl-:` Can't be entered on a US ANSI
-                    // keyboard only `shift-;` can. Make docs clear this
+                    // TODO: `Ctrl-:` Can't be entered on a US ANSI
+                    // keyboard only `Shift-;` can. Make docs clear this
                     // is the key and not the symbol?
 
-                    // add_shift = true;
+                    // add_Shift = true;
                     // Some("Semicolon")
                     Some("Colon")
                 }
@@ -431,12 +431,12 @@ fn read_modifiers<F: Fn(u8) -> TokenStream>(
         let bitflag = modifier.bitflag();
         if bitflag < bitflags {
             // emit_warning!(gcc
-            // emit_call_site_warning!("Modifiers must occur in this order: control, alt, shift, super.");
+            // emit_call_site_warning!("Modifiers must occur in this order: control, Alt, Shift, Super.");
             if cfg!(feature = "strict-order") {
-                abort_call_site!("Modifiers must occur in this order: control, alt, shift, super.");
+                abort_call_site!("Modifiers must occur in this order: control, Alt, Shift, Super.");
             } else {
                 emit_call_site_warning!(
-                    "Modifiers must occur in this order: control, alt, shift, super."
+                    "Modifiers must occur in this order: control, Alt, Shift, Super."
                 );
             }
         }
@@ -450,10 +450,10 @@ fn read_modifiers<F: Fn(u8) -> TokenStream>(
         } else {
             match tree {
                 TokenTree::Ident(ref ident) => match ident.span().source_text().unwrap().as_str() {
-                    "ctrl" => accum_mods(Modifier::Control),
-                    "alt" => accum_mods(Modifier::Alt),
-                    "shift" => accum_mods(Modifier::Shift),
-                    "super" => accum_mods(Modifier::Super),
+                    "Ctrl" => accum_mods(Modifier::Control),
+                    "Alt" => accum_mods(Modifier::Alt),
+                    "Shift" => accum_mods(Modifier::Shift),
+                    "Super" => accum_mods(Modifier::Super),
                     x => abort!(x, "Should be a modifier or a hyphen"),
                 },
                 TokenTree::Punct(ref punct) => match punct.as_char() {
@@ -467,7 +467,7 @@ fn read_modifiers<F: Fn(u8) -> TokenStream>(
     }
     // This will add an empty to finish the expression:
     //
-    //    ctrl-alt-EMPTY -> Control | Alt | EMPTY.
+    //    Ctrl-Alt-EMPTY -> Control | Alt | EMPTY.
     //
     //  And it will provide a valid Modifier when none have been provided.
     // r.extend([to_modifiers(Modifier::None)]);

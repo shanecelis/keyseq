@@ -37,11 +37,11 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
             let name: Option<&str> = match punct.as_char() {
                 ';' => Some("Semicolon"),
                 ':' => {
-                    // TODO: `ctrl-:` Can't be entered on a US ANSI
-                    // keyboard only `shift-;` can. Make docs clear this
+                    // TODO: `Ctrl-:` Can't be entered on a US ANSI
+                    // keyboard only `Shift-;` can. Make docs clear this
                     // is the key and not the symbol?
 
-                    // add_shift = true;
+                    // add_Shift = true;
                     // Some("Semicolon")
                     Some("Colon")
                 }
@@ -65,8 +65,8 @@ pub fn get_pkey(tree: TokenTree) -> Option<TokenStream> {
                 let name: Option<Cow<'static, str>> = match label.chars().next().unwrap() {
                     // x @ 'A'..='Z' => {
                     x @ 'A'..='Z' => {
-                        // I'm not sure I like adding shift.
-                        // add_shift = true;
+                        // I'm not sure I like adding Shift.
+                        // add_Shift = true;
                         // Some(x.to_string().into())
                         Some(format!("Key{x}").into())
                     }

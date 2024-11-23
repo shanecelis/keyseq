@@ -44,13 +44,14 @@ impl From<KeyCode> for Modifiers {
 /// use keyseq::{Modifiers, bevy::pkey};
 /// use bevy::prelude::KeyCode;
 /// assert_eq!(pkey! { A },          (Modifiers::NONE, KeyCode::KeyA));
-/// assert_eq!(pkey! { ctrl-A },     (Modifiers::CONTROL, KeyCode::KeyA));
-/// assert_eq!(pkey! { alt-A },      (Modifiers::ALT, KeyCode::KeyA));
-/// assert_eq!(pkey! { shift-A },    (Modifiers::SHIFT, KeyCode::KeyA));
-/// assert_eq!(pkey! { super-A },    (Modifiers::SUPER, KeyCode::KeyA));
-/// assert_eq!(pkey! { ctrl-alt-; }, (Modifiers::CONTROL | Modifiers::ALT, KeyCode::Semicolon));
+/// assert_eq!(pkey! { Ctrl-A },     (Modifiers::CONTROL, KeyCode::KeyA));
+/// assert_eq!(pkey! { Alt-A },      (Modifiers::ALT, KeyCode::KeyA));
+/// assert_eq!(pkey! { Shift-A },    (Modifiers::SHIFT, KeyCode::KeyA));
+/// assert_eq!(pkey! { Super-A },    (Modifiers::SUPER, KeyCode::KeyA));
+/// assert_eq!(pkey! { Ctrl-Alt-; }, (Modifiers::CONTROL | Modifiers::ALT, KeyCode::Semicolon));
+/// assert_eq!(pkey! { Ctrl-Alt-Semicolon }, (Modifiers::CONTROL | Modifiers::ALT, KeyCode::Semicolon));
 /// assert_eq!(pkey! { 1 },          (Modifiers::NONE, KeyCode::Digit1));
-/// assert_eq!(pkey! { alt-1 },      (Modifiers::ALT, KeyCode::Digit1));
+/// assert_eq!(pkey! { Alt-1 },      (Modifiers::ALT, KeyCode::Digit1));
 /// ```
 ///
 /// More than one key will cause a panic at compile-time. Use keyseq! for that.
@@ -67,7 +68,7 @@ impl From<KeyCode> for Modifiers {
 /// ```compile_fail
 /// use keyseq::bevy::pkey;
 /// use bevy::prelude::KeyCode;
-/// let (mods, key) = pkey! { alt-NoSuchKey }; // KeyCode::NoSuchKey does not exist.
+/// let (mods, key) = pkey! { Alt-NoSuchKey }; // KeyCode::NoSuchKey does not exist.
 /// ```
 /// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
 pub use keyseq_macros::bevy_pkey as pkey;

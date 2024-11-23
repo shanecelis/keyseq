@@ -4,7 +4,7 @@
   [![crates-io](https://img.shields.io/crates/v/keyseq_macros.svg)](https://crates.io/crates/keyseq_macros)
   [![api-docs](https://docs.rs/keyseq_macros/badge.svg)](https://docs.rs/keyseq_macros)
 
-Specify key chords using a short-hand, e.g., `ctrl-A`, for the [bevy game engine](https://bevyengine.org) or [winit](https://github.com/rust-windowing/winit).
+Specify key chords using a short-hand, e.g., `Ctrl-A`, for the [bevy game engine](https://bevyengine.org) or [winit](https://github.com/rust-windowing/winit).
 
 # Description
 

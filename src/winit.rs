@@ -11,11 +11,11 @@ use ::winit::keyboard::ModifiersState;
 /// use winit::keyboard::Key;
 ///
 /// assert_eq!(key!{ a },          (Modifiers::NONE,    Key::Character('a')));
-/// assert_eq!(key!{ ctrl-a },     (Modifiers::CONTROL, Key::Character('a')));
-/// assert_eq!(key!{ alt-a },      (Modifiers::ALT,     Key::Character('a')));
-/// assert_eq!(key!{ shift-a },    (Modifiers::SHIFT,   Key::Character('a')));
-/// assert_eq!(key!{ super-a },    (Modifiers::SUPER,   Key::Character('a')));
-/// assert_eq!(key!{ ctrl-alt-; }, (Modifiers::ALT |
+/// assert_eq!(key!{ Ctrl-a },     (Modifiers::CONTROL, Key::Character('a')));
+/// assert_eq!(key!{ Alt-a },      (Modifiers::ALT,     Key::Character('a')));
+/// assert_eq!(key!{ Shift-a },    (Modifiers::SHIFT,   Key::Character('a')));
+/// assert_eq!(key!{ Super-a },    (Modifiers::SUPER,   Key::Character('a')));
+/// assert_eq!(key!{ Ctrl-Alt-; }, (Modifiers::ALT |
 ///                                 Modifiers::CONTROL, Key::Character(';')));
 /// ```
 ///
@@ -25,7 +25,7 @@ use ::winit::keyboard::ModifiersState;
 /// ```compile_fail
 /// # use keyseq::{Modifiers, winit::lkey};
 /// use winit::keyboard::Key;
-/// assert_eq!(lkey!(ctrl-Semicolon), (Modifiers::CONTROL, Key::Character(';')));
+/// assert_eq!(lkey!(Ctrl-Semicolon), (Modifiers::CONTROL, Key::Character(';')));
 /// ```
 pub use keyseq_macros::winit_lkey as lkey;
 

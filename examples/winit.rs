@@ -40,13 +40,13 @@ fn main() -> Result<(), impl std::error::Error> {
                     if event.state == ElementState::Pressed && !event.repeat {
                         if let PhysicalKey::Code(key_code) = event.physical_key {
                             match (modifiers.into(), key_code) {
-                                pkey!{ ctrl-A } | pkey!{ super-A } => println!("Just pressed ctrl-A or super-A!"),
-                                pkey!{ ctrl-alt-A }                => println!("Just pressed ctrl-alt-A!"),
-                                pkey!{ ctrl-shift-A }              => println!("Just pressed ctrl-shift-A!"),
-                                pkey!{ alt-shift-A }               => println!("Just pressed alt-shift-A!"),
-                                pkey!{ shift-A }                   => println!("Just pressed shift-A!"),
-                                pkey!{ alt-A }                     => println!("Just pressed alt-A!"),
-                                pkey!{ super-A }                   => println!("Just pressed super-A!"),
+                                pkey!{ Ctrl-A } | pkey!{ Super-A } => println!("Just pressed Ctrl-A or Super-A!"),
+                                pkey!{ Ctrl-Alt-A }                => println!("Just pressed Ctrl-Alt-A!"),
+                                pkey!{ Ctrl-Shift-A }              => println!("Just pressed Ctrl-Shift-A!"),
+                                pkey!{ Alt-Shift-A }               => println!("Just pressed Alt-Shift-A!"),
+                                pkey!{ Shift-A }                   => println!("Just pressed Shift-A!"),
+                                pkey!{ Alt-A }                     => println!("Just pressed Alt-A!"),
+                                pkey!{ Super-A }                   => println!("Just pressed Super-A!"),
                                 pkey!{ A }                         => println!("Just pressed A!"),
                                 _                                  => println!("No key matched"),
                             }
