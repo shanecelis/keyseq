@@ -421,13 +421,11 @@ fn read_modifiers<F: Fn(u8) -> TokenStream>(
 
     fn is_dash(tree: &TokenTree) -> bool {
         match tree {
-            TokenTree::Punct(ref punct) => {
-                match punct.as_char() {
-                    '-' => true,
-                    #[cfg(feature = "permit-plus")]
-                    '+' => true,
-                    _ => false,
-                }
+            TokenTree::Punct(ref punct) => match punct.as_char() {
+                '-' => true,
+                #[cfg(feature = "permit-plus")]
+                '+' => true,
+                _ => false,
             },
             _ => false,
         }
