@@ -126,6 +126,13 @@ pub mod winit;
 #[cfg(feature = "bevy")]
 pub mod bevy;
 
+
+/// ```compile_fail
+/// assert_eq!(poor::pkey! { Ctrl+A }, (1, "A"));
+/// ```
+#[cfg(all(feature = "poor", not(feature = "permit-plus")))]
+struct test_dummy;
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -133,6 +140,23 @@ mod tests {
     fn display_modifiers() {
         let mods = Modifiers(1 + 2 + 4);
         assert_eq!(format!("{}", mods), "Ctrl-Alt-Shift");
+
+    }
+
+    #[cfg(all(feature = "poor", feature = "permit-plus"))]
+    #[test]
+    fn permit_plus() {
+        assert!(false);
+        assert_eq!(poor::pkey! { Ctrl+A }, (1, "A"));
+    }
+
+    /// ```compile_fail
+    /// alskdfj
+    /// assert_eq!(poor::pkey! { Ctrl+A }, (1, "A"));
+    /// ```
+    ///
+    #[cfg(all(feature = "poor", not(feature = "permit-plus")))]
+    fn deny_plus() {
 
     }
 }

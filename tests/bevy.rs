@@ -18,4 +18,13 @@ mod for_bevy {
             _ => panic!(),
         }
     }
+
+    #[test]
+    fn check_display() {
+        assert_eq!(pkey! { A }.0.to_string(), "");
+        assert_eq!(pkey! { Shift-A }.0.to_string(), "Shift");
+        assert_eq!(pkey! { Ctrl-Shift-A }.0.to_string(), "Ctrl-Shift");
+        assert_eq!(pkey! { Ctrl-Alt-Shift-A }.0.to_string(), "Ctrl-Alt-Shift");
+        assert_eq!(pkey! { Ctrl-Alt-Super-A }.0.to_string(), "Ctrl-Alt-Super");
+    }
 }

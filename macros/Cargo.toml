@@ -28,6 +28,7 @@ poor = []
 bevy = []
 bevy-input-sequence = []
 strict-order = []
+permit-plus = []
 
 [dependencies]
 proc-macro-error = { version = "1.0.4", default-features = false }
