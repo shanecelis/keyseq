@@ -34,7 +34,7 @@ permit-plus = ["keyseq_macros/permit-plus"]
 keyseq_macros = { version = "0.3.0", path = "macros" }
 bevy = { version = "0.14", default-features = false, optional = true }
 bevy_reflect = { version = "0.14", optional = true }
-winit = { version = "0.29.10", default-features = false, optional = true }
+winit = { version = "0.30", default-features = false, optional = true }
 bitflags = "2.4.2"
 
 [dev-dependencies]
@@ -48,3 +48,4 @@ required-features = ["winit"]
 [[example]]
 name = "bevy"
 required-features = ["bevy"]
+

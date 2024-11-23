@@ -8,7 +8,7 @@ use winit::{
     keyboard::{ModifiersState, PhysicalKey},
     // WARNING: This is not available on all platforms (for example on the web).
     // platform::modifier_supplement::KeyEventExtModifierSupplement,
-    window::WindowBuilder,
+    window::Window,
 };
 
 #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
@@ -22,10 +22,9 @@ fn main() -> Result<(), impl std::error::Error> {
     println!("Press A key with different modifier keys.");
     let event_loop = EventLoop::new().unwrap();
 
-    let _window = WindowBuilder::new()
-        .with_inner_size(LogicalSize::new(400.0, 200.0))
-        .build(&event_loop)
-        .unwrap();
+    let attributes = Window::default_attributes()
+        .with_inner_size(LogicalSize::new(400.0, 200.0));
+    let window = event_loop.create_window(attributes).unwrap();
 
     let mut modifiers = ModifiersState::default();
 
@@ -44,11 +43,12 @@ fn main() -> Result<(), impl std::error::Error> {
                                 pkey!{ Ctrl-Alt-A }                => println!("Just pressed Ctrl-Alt-A!"),
                                 pkey!{ Ctrl-Shift-A }              => println!("Just pressed Ctrl-Shift-A!"),
                                 pkey!{ Alt-Shift-A }               => println!("Just pressed Alt-Shift-A!"),
+                                pkey!{ Ctrl-Alt-Shift-A }          => println!("Just pressed Alt-Shift-A!"),
                                 pkey!{ Shift-A }                   => println!("Just pressed Shift-A!"),
                                 pkey!{ Alt-A }                     => println!("Just pressed Alt-A!"),
                                 pkey!{ Super-A }                   => println!("Just pressed Super-A!"),
                                 pkey!{ A }                         => println!("Just pressed A!"),
-                                _                                  => println!("No key matched"),
+                                _                                  => println!("No key matched."),
                             }
                         }
                     }
