@@ -85,20 +85,32 @@ impl fmt::Debug for Modifiers {
 
 impl fmt::Display for Modifiers {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut accum = Vec::new();
+        let mut first = true;
         if self.contains(Modifiers::CONTROL) {
-            accum.push("Ctrl");
+            f.write_str("Ctrl")?;
+            first = false;
         }
         if self.contains(Modifiers::ALT) {
-            accum.push("Alt");
+            if !first {
+                f.write_str("-")?;
+            }
+            f.write_str("Alt")?;
+            first = false;
         }
         if self.contains(Modifiers::SHIFT) {
-            accum.push("Shift");
+            if !first {
+                f.write_str("-")?;
+            }
+            f.write_str("Shift")?;
+            first = false;
         }
         if self.contains(Modifiers::SUPER) {
-            accum.push("Super");
+            if !first {
+                f.write_str("-")?;
+            }
+            f.write_str("Super")?;
         }
-        f.write_str(&accum.join("-"))
+        Ok(())
     }
 }
 
