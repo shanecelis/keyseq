@@ -1,5 +1,5 @@
 use super::get_key_raw;
-use proc_macro2::{Ident, Span, TokenStream, TokenTree, Literal};
+use proc_macro2::{Ident, Literal, Span, TokenStream, TokenTree};
 use proc_macro_error::abort;
 use quote::quote;
 use std::borrow::Cow;
@@ -9,7 +9,7 @@ pub fn get_key(tree: TokenTree) -> Option<TokenStream> {
         Ok(c) => {
             let l = Literal::string(&c.to_string());
             quote! { ::bevy::input::keyboard::Key::Character(#l.into()) }
-        },
+        }
         Err(cow) => {
             let i = Ident::new(&cow, Span::call_site());
             quote! { ::bevy::input::keyboard::Key::#i }

@@ -79,7 +79,6 @@ pub use keyseq_macros::bevy_pkey as pkey;
 /// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
 pub use keyseq_macros::bevy_pkeyseq as pkeyseq;
 
-
 /// Short hand notation describes a logical key chord as `(modifiers:`
 /// [Modifiers]`, key: `[bevy::input::keyboard::Key][key]`)`.
 ///

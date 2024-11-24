@@ -1,6 +1,6 @@
 #[cfg(feature = "bevy")]
 mod for_bevy {
-    use ::bevy::{prelude::*, input::keyboard::Key};
+    use ::bevy::{input::keyboard::Key, prelude::*};
     use keyseq::{bevy::*, Modifiers};
 
     #[test]
@@ -30,25 +30,52 @@ mod for_bevy {
 
     #[test]
     fn pkey0() {
-        assert_eq!(pkeyseq! { Ctrl-Semicolon }, [(Modifiers::CONTROL, KeyCode::Semicolon)]);
+        assert_eq!(
+            pkeyseq! { Ctrl-Semicolon },
+            [(Modifiers::CONTROL, KeyCode::Semicolon)]
+        );
     }
 
     #[test]
     fn lkeyseq0() {
-        assert_eq!(lkeyseq! { Ctrl-; }, [(Modifiers::CONTROL, Key::Character(";".into()))]);
-        assert_eq!(lkeyseq! { Ctrl-: }, [(Modifiers::CONTROL, Key::Character(":".into()))]);
+        assert_eq!(
+            lkeyseq! { Ctrl-; },
+            [(Modifiers::CONTROL, Key::Character(";".into()))]
+        );
+        assert_eq!(
+            lkeyseq! { Ctrl-: },
+            [(Modifiers::CONTROL, Key::Character(":".into()))]
+        );
         // TODO: Is this ok? Isn't there an implicit shift? Does it matter?
-        assert_eq!(lkeyseq! { Ctrl-A }, [(Modifiers::CONTROL, Key::Character("A".into()))]);
-        assert_eq!(lkeyseq! { Ctrl-a }, [(Modifiers::CONTROL, Key::Character("a".into()))]);
+        assert_eq!(
+            lkeyseq! { Ctrl-A },
+            [(Modifiers::CONTROL, Key::Character("A".into()))]
+        );
+        assert_eq!(
+            lkeyseq! { Ctrl-a },
+            [(Modifiers::CONTROL, Key::Character("a".into()))]
+        );
     }
 
     #[test]
     fn lkey0() {
-        assert_eq!(lkey! { Ctrl-; }, (Modifiers::CONTROL, Key::Character(";".into())));
-        assert_eq!(lkey! { Ctrl-: }, (Modifiers::CONTROL, Key::Character(":".into())));
+        assert_eq!(
+            lkey! { Ctrl-; },
+            (Modifiers::CONTROL, Key::Character(";".into()))
+        );
+        assert_eq!(
+            lkey! { Ctrl-: },
+            (Modifiers::CONTROL, Key::Character(":".into()))
+        );
         // TODO: Is this ok? Isn't there an implicit shift? Does it matter?
-        assert_eq!(lkey! { Ctrl-A }, (Modifiers::CONTROL, Key::Character("A".into())));
-        assert_eq!(lkey! { Ctrl-a }, (Modifiers::CONTROL, Key::Character("a".into())));
+        assert_eq!(
+            lkey! { Ctrl-A },
+            (Modifiers::CONTROL, Key::Character("A".into()))
+        );
+        assert_eq!(
+            lkey! { Ctrl-a },
+            (Modifiers::CONTROL, Key::Character("a".into()))
+        );
     }
 
     // TODO: These doc tests don't work.
@@ -57,5 +84,4 @@ mod for_bevy {
     // /// assert_eq!(lkeyseq! { Ctrl-Semicolon }, [(Modifiers::CONTROL, Key::Character(";".into()))]);
     // /// ````
     // struct TestLkey1;
-
 }
