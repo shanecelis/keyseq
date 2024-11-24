@@ -26,7 +26,6 @@ default = ["strict-order"]
 winit = []
 poor = []
 bevy = []
-bevy-input-sequence = []
 strict-order = []
 permit-plus = []
 
