@@ -13,7 +13,8 @@ Specify key chords using `Ctrl-A` short-hand, supports [bevy](https://bevyengine
   documentation.
 
 * For the sake of finding key chords in code, prefer one way of describing the
-  keys, e.g., accept "Ctrl-A"; do not accept "control-A" or "C-A" or "Ctrl+A".
+  keys, e.g., accept "Ctrl-A"; do not accept "control-A" or "C-A". ("Ctrl+A" can
+  be accepted by using the "permit-plus" feature flag.)
 
 # Install
 
