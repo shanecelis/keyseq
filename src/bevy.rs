@@ -1,10 +1,32 @@
 //! keyseq macros for bevy game engine
 use super::Modifiers;
-use ::bevy::input::{keyboard::KeyCode, ButtonInput as Input};
+use ::bevy::{prelude::Res, input::{keyboard::KeyCode, ButtonInput}};
 
 impl Modifiers {
     /// Check modifier keys for `any_pressed()` to populate bit flags.
-    pub fn from_input(input: &Input<KeyCode>) -> Modifiers {
+    #[deprecated(since = "0.4.0", note = "Consider using `Modifiers::from()` instead.")]
+    pub fn from_input(input: &ButtonInput<KeyCode>) -> Modifiers {
+        Modifiers::from(input)
+    }
+}
+
+impl From<KeyCode> for Modifiers {
+    #[inline(always)]
+    fn from(key: KeyCode) -> Self {
+        match key {
+            KeyCode::ShiftLeft | KeyCode::ShiftRight => Modifiers::SHIFT,
+            KeyCode::ControlLeft | KeyCode::ControlRight => Modifiers::CONTROL,
+            KeyCode::AltLeft | KeyCode::AltRight => Modifiers::ALT,
+            KeyCode::SuperLeft | KeyCode::SuperRight => Modifiers::SUPER,
+            _ => Modifiers::empty(),
+        }
+    }
+}
+
+/// Check left and right modifier keys to populate bit flags.
+impl From<&ButtonInput<KeyCode>> for Modifiers {
+    #[inline(always)]
+    fn from(input: &ButtonInput<KeyCode>) -> Self {
         let mut mods = Modifiers::empty();
         if input.any_pressed([KeyCode::ShiftLeft, KeyCode::ShiftRight]) {
             mods |= Modifiers::SHIFT;
@@ -22,27 +44,23 @@ impl Modifiers {
     }
 }
 
-impl From<KeyCode> for Modifiers {
+/// Convenience wrapper to avoid `Modifier::from(&*input)` shenanigans due to
+/// resource type `Res<>` wrapper.
+impl From<&Res<'_, ButtonInput<KeyCode>>> for Modifiers {
     #[inline(always)]
-    fn from(key: KeyCode) -> Self {
-        match key {
-            KeyCode::ShiftLeft | KeyCode::ShiftRight => Modifiers::SHIFT,
-            KeyCode::ControlLeft | KeyCode::ControlRight => Modifiers::CONTROL,
-            KeyCode::AltLeft | KeyCode::AltRight => Modifiers::ALT,
-            KeyCode::SuperLeft | KeyCode::SuperRight => Modifiers::SUPER,
-            _ => Modifiers::empty(),
-        }
+    fn from(input: &Res<ButtonInput<KeyCode>>) -> Self {
+        <Modifiers as From<&ButtonInput<KeyCode>>>::from(input)
     }
 }
 
 /// Short hand notation describes a physical key chord as `(modifiers: `[Modifiers]`,
-/// key_code: `[bevy::prelude::KeyCode][keycode]`)`.
+/// key_code: `[bevy::input::keyboard::KeyCode][keycode]`)`.
 ///
 /// Specify a key and any modifiers.
 ///
 /// ```
 /// use keyseq::{Modifiers, bevy::pkey};
-/// use bevy::prelude::KeyCode;
+/// use bevy::input::keyboard::KeyCode;
 /// assert_eq!(pkey! { A },          (Modifiers::NONE, KeyCode::KeyA));
 /// assert_eq!(pkey! { Ctrl-A },     (Modifiers::CONTROL, KeyCode::KeyA));
 /// assert_eq!(pkey! { Alt-A },      (Modifiers::ALT, KeyCode::KeyA));
@@ -67,14 +85,14 @@ impl From<KeyCode> for Modifiers {
 ///
 /// ```compile_fail
 /// use keyseq::bevy::pkey;
-/// use bevy::prelude::KeyCode;
+/// use bevy::input::keyboard::KeyCode;
 /// let (mods, key) = pkey! { Alt-NoSuchKey }; // KeyCode::NoSuchKey does not exist.
 /// ```
 /// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
 pub use keyseq_macros::bevy_pkey as pkey;
 
 /// Short hand notation describes a sequence of physical key chords as
-/// `[(modifiers: `[Modifiers]`, key: `[bevy::prelude::KeyCode][keycode]`)]`.
+/// `[(modifiers: `[Modifiers]`, key: `[bevy::input::keyboard::KeyCode][keycode]`)]`.
 ///
 /// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
 pub use keyseq_macros::bevy_pkeyseq as pkeyseq;

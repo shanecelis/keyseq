@@ -1,6 +1,6 @@
 //! A simple 3D scene with light shining over a cube sitting on a plane.
 
-use bevy::{input::ButtonInput as Input, prelude::*};
+use bevy::{input::ButtonInput, prelude::*};
 use keyseq::{bevy::pkey, Modifiers};
 
 fn main() {
@@ -14,8 +14,8 @@ fn main() {
 
 #[rustfmt::skip]
 /// This system detects some key presses.
-fn keyboard_input_system(input: Res<Input<KeyCode>>) {
-    let mods = Modifiers::from_input(&input);
+fn keyboard_input_system(input: Res<ButtonInput<KeyCode>>) {
+    let mods = Modifiers::from(&input);
     for key in input.get_just_pressed() {
         match (mods, key) {
             pkey!{ Ctrl-A } | pkey!{ Super-A } => println!("Just pressed Ctrl-A or Super-A!"),
