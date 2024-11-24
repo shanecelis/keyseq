@@ -177,6 +177,8 @@ versa.
 
 ## Bevy
 
+### Physical Keys
+
 With the "bevy" feature the `keyseq::bevy::pkey!` macro returns a
 `(keyseq::Modifiers, KeyCode)` tuple.
 
@@ -193,6 +195,33 @@ assert_eq!(pkey! { Super-A },   (Modifiers::SUPER,   KeyCode::KeyA));
 assert_eq!(pkey! { Ctrl-Shift-A }, 
                                 (Modifiers::SHIFT |
                                  Modifiers::CONTROL, KeyCode::KeyA));
+```
+
+### Logical Keys
+
+With the "bevy" feature the `keyseq::bevy::lkey!` macro returns a
+`(Modifiers, Key)` tuple.
+
+```
+use keyseq::{Modifiers, bevy::lkey as key};
+use bevy::input::keyboard::Key;
+
+assert_eq!(key!{ a },          (Modifiers::NONE,    Key::Character("a".into())));
+assert_eq!(key!{ Ctrl-a },     (Modifiers::CONTROL, Key::Character("a".into())));
+assert_eq!(key!{ Alt-a },      (Modifiers::ALT,     Key::Character("a".into())));
+assert_eq!(key!{ Shift-a },    (Modifiers::SHIFT,   Key::Character("a".into())));
+assert_eq!(key!{ Super-a },    (Modifiers::SUPER,   Key::Character("a".into())));
+assert_eq!(key!{ Ctrl-Alt-; }, (Modifiers::ALT |
+                                Modifiers::CONTROL, Key::Character(";".into())));
+```
+
+### Logical Key Sequences
+```
+# use keyseq::Modifiers;
+# use bevy::input::keyboard::Key;
+use keyseq::bevy::lkeyseq;
+assert_eq!(lkeyseq! { a Ctrl-b }, [(Modifiers::NONE,    Key::Character("a".into())),
+                                   (Modifiers::CONTROL, Key::Character("b".into()))]);
 ```
 
 # Features

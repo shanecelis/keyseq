@@ -6,6 +6,7 @@
     not(all(feature = "winit", feature = "bevy")),
     doc = "Warning: Not full documentation. Please generate doc with `--all-features` option to include README."
 )]
+#![forbid(missing_docs)]
 use bitflags::bitflags;
 use std::fmt;
 

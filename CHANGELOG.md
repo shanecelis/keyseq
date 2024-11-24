@@ -15,6 +15,8 @@ they are often highlighted as though they are reserved words.
 
 The majority of hotkey notations use plus, so I bend to their use.
 
+- Add logical key macros for Bevy.
+
 - Update to winit 0.30.
 
 ## v0.3.0

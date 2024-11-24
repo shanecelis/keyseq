@@ -78,3 +78,37 @@ pub use keyseq_macros::bevy_pkey as pkey;
 ///
 /// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
 pub use keyseq_macros::bevy_pkeyseq as pkeyseq;
+
+
+/// Short hand notation describes a logical key chord as `(modifiers:`
+/// [Modifiers]`, key: `[bevy::input::keyboard::Key][key]`)`.
+///
+/// [key]: https://docs.rs/bevy/latest/bevy/prelude/enum.Key.html
+/// ```
+/// use keyseq::{Modifiers, bevy::lkey as key};
+/// use bevy::input::keyboard::Key;
+///
+/// assert_eq!(key!{ a },          (Modifiers::NONE,    Key::Character("a".into())));
+/// assert_eq!(key!{ Ctrl-a },     (Modifiers::CONTROL, Key::Character("a".into())));
+/// assert_eq!(key!{ Alt-a },      (Modifiers::ALT,     Key::Character("a".into())));
+/// assert_eq!(key!{ Shift-a },    (Modifiers::SHIFT,   Key::Character("a".into())));
+/// assert_eq!(key!{ Super-a },    (Modifiers::SUPER,   Key::Character("a".into())));
+/// assert_eq!(key!{ Ctrl-Alt-; }, (Modifiers::ALT |
+///                                 Modifiers::CONTROL, Key::Character(";".into())));
+/// ```
+///
+/// This does have a limitation though because the macro does not do reverse look
+/// ups from character to name.
+///
+/// ```compile_fail
+/// # use keyseq::{Modifiers, bevy::lkey};
+/// use bevy::input::keyboard::Key;
+/// assert_eq!(lkey!(Ctrl-Semicolon), (Modifiers::CONTROL, Key::Character(";".into())));
+/// ```
+pub use keyseq_macros::bevy_lkey as lkey;
+
+/// Short hand notation describes a sequence of logical key chords as `[(modifiers:
+/// `[Modifiers]`, key: `[bevy::input::keyboard::Key][key]`)]`.
+///
+/// [key]: https://docs.rs/bevy/latest/bevy/prelude/enum.Key.html
+pub use keyseq_macros::bevy_lkeyseq as lkeyseq;

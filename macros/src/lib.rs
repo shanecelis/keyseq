@@ -69,6 +69,17 @@ pub fn bevy_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     result.into()
 }
 
+#[cfg(feature = "bevy")]
+#[proc_macro_error]
+#[proc_macro]
+pub fn bevy_lkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let (result, leftover) = read_key_chord(input.into(), to_keyseq_modifiers, bevy::get_key);
+    if !leftover.is_empty() {
+        abort!(leftover, "Too many tokens; use keyseq! for multiple keys");
+    }
+    result.into()
+}
+
 /// Short hand notation describes a physical key chord as `(modifiers:`
 /// [winit::keyboard::ModifiersState][mods]`, key_code: `[winit::keyboard::KeyCode][keycode]`)`.
 ///
@@ -199,6 +210,17 @@ pub fn poor_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 #[proc_macro]
 pub fn bevy_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let keys = read_key_chords(input.into(), to_keyseq_modifiers, bevy::get_pkey);
+    quote! {
+        [#(#keys),*]
+    }
+    .into()
+}
+
+#[cfg(feature = "bevy")]
+#[proc_macro_error]
+#[proc_macro]
+pub fn bevy_lkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let keys = read_key_chords(input.into(), to_keyseq_modifiers, bevy::get_key);
     quote! {
         [#(#keys),*]
     }
@@ -381,7 +403,7 @@ fn get_key(tree: TokenTree) -> Option<TokenStream> {
     })
 }
 
-#[cfg(any(feature = "poor", feature = "winit"))]
+#[cfg(any(feature = "poor", feature = "winit", feature = "bevy"))]
 fn get_key_raw(tree: TokenTree) -> Option<Result<char, Cow<'static, str>>> {
     match tree {
         TokenTree::Literal(ref literal) => {
