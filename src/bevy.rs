@@ -1,6 +1,9 @@
 //! keyseq macros for bevy game engine
 use super::Modifiers;
-use ::bevy::{prelude::Res, input::{keyboard::KeyCode, ButtonInput}};
+use ::bevy::{
+    input::{keyboard::KeyCode, ButtonInput},
+    prelude::Res,
+};
 
 impl Modifiers {
     /// Check modifier keys for `any_pressed()` to populate bit flags.
