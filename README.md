@@ -35,8 +35,8 @@ cargo add keyseq --features bevy; # OR --features winit
   that does not change no matter what modifiers are held down. For instance
   there is a physical 'Q' key, often to the right of the tab key. There is no
   physical lower-case 'q' key.
-* A logical key is specified by the key produces. If pressing the key produces
-  a 'q' character, then it is logically a 'q' key.
+* A logical key is specified by what the key produces. If pressing the key
+  produces a 'q' character, then it is logically a 'q' key.
   
 # Usage
 
