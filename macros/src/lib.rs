@@ -22,14 +22,14 @@ mod bevy;
 ///
 /// ```
 /// # use keyseq_macros::poor_pkey as pkey;
-/// assert_eq!(pkey!{ A }, (0, "A"));
-/// assert_eq!(pkey!{ Ctrl-A }, (1, "A"));
-/// assert_eq!(pkey!{ Alt-A }, (2, "A"));
-/// assert_eq!(pkey!{ Shift-A }, (4, "A"));
-/// assert_eq!(pkey!{ Super-A }, (8, "A"));
-/// assert_eq!(pkey!{ Ctrl-Alt-; }, (3, "Semicolon"));
-/// assert_eq!(pkey!{ 1 }, (0, "Key1"));
-/// assert_eq!(pkey!{ Alt-1 }, (2, "Key1"));
+/// assert_eq!(pkey! { A }, (0, "A"));
+/// assert_eq!(pkey! { Ctrl-A }, (1, "A"));
+/// assert_eq!(pkey! { Alt-A }, (2, "A"));
+/// assert_eq!(pkey! { Shift-A }, (4, "A"));
+/// assert_eq!(pkey! { Super-A }, (8, "A"));
+/// assert_eq!(pkey! { Ctrl-Alt-; }, (3, "Semicolon"));
+/// assert_eq!(pkey! { 1 }, (0, "Key1"));
+/// assert_eq!(pkey! { Alt-1 }, (2, "Key1"));
 /// ```
 ///
 /// More than one key will cause a panic at compile-time. Use keyseq! for that.
@@ -37,7 +37,7 @@ mod bevy;
 /// ```compile_fail
 /// # use keyseq_macros::poor_pkey as pkey;
 /// fn too_many_keys() {
-///     let _ = pkey!{ A B };
+///     let _ = pkey! { A B };
 /// }
 /// ```
 ///
@@ -45,7 +45,12 @@ mod bevy;
 ///
 /// ```
 /// # use keyseq_macros::poor_pkey as pkey;
-/// assert_eq!(pkey!{ Alt-NoSuchKey }, (2, "NoSuchKey"));
+/// assert_eq!(pkey! { Alt-NoSuchKey }, (2, "NoSuchKey"));
+/// ```
+///
+/// ```
+/// assert_eq!(keyseq_macros::poor_pkey! { Ctrl-W },
+///            (1, "W"));
 /// ```
 #[cfg(feature = "poor")]
 #[proc_macro_error]
@@ -58,6 +63,9 @@ pub fn poor_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     result.into()
 }
 
+/// ```ignore
+/// keyseq_macros::bevy_pkey! { Ctrl-W }
+/// ```
 #[cfg(feature = "bevy")]
 #[proc_macro_error]
 #[proc_macro]
@@ -69,6 +77,9 @@ pub fn bevy_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     result.into()
 }
 
+/// ```ignore
+/// keyseq_macros::bevy_lkey! { Ctrl-W }
+/// ```
 #[cfg(feature = "bevy")]
 #[proc_macro_error]
 #[proc_macro]
@@ -83,6 +94,9 @@ pub fn bevy_lkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// Short hand notation describes a physical key chord as `(modifiers:`
 /// [winit::keyboard::ModifiersState][mods]`, key_code: `[winit::keyboard::KeyCode][keycode]`)`.
 ///
+/// ```ignore
+/// keyseq_macros::winit_pkey! { Ctrl-W }
+/// ```
 /// [mods]: https://docs.rs/winit/latest/winit/keyboard/struct.ModifiersState.html
 /// [keycode]: https://docs.rs/winit/latest/winit/keyboard/enum.KeyCode.html
 #[cfg(feature = "winit")]
@@ -104,15 +118,15 @@ pub fn winit_pkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 ///
 /// ```
 /// # use keyseq_macros::poor_lkey as key;
-/// assert_eq!(key!{ a }, (0, "a"));
-/// assert_eq!(key!{ A }, (0, "A"));
-/// assert_eq!(key!{ Ctrl-A }, (1, "A"));
-/// assert_eq!(key!{ Alt-A }, (2, "A"));
-/// assert_eq!(key!{ Shift-A }, (4, "A"));
-/// assert_eq!(key!{ Super-A }, (8, "A"));
-/// assert_eq!(key!{ Ctrl-Alt-; }, (3, ";"));
-/// assert_eq!(key!{ 1 }, (0, "1"));
-/// assert_eq!(key!{ Alt-1 }, (2, "1"));
+/// assert_eq!(key! { a }, (0, "a"));
+/// assert_eq!(key! { A }, (0, "A"));
+/// assert_eq!(key! { Ctrl-A }, (1, "A"));
+/// assert_eq!(key! { Alt-A }, (2, "A"));
+/// assert_eq!(key! { Shift-A }, (4, "A"));
+/// assert_eq!(key! { Super-A }, (8, "A"));
+/// assert_eq!(key! { Ctrl-Alt-; }, (3, ";"));
+/// assert_eq!(key! { 1 }, (0, "1"));
+/// assert_eq!(key! { Alt-1 }, (2, "1"));
 /// ```
 ///
 /// More than one key will cause a panic at compile-time. Use keyseq! for that.
@@ -137,6 +151,9 @@ pub fn poor_lkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// Short hand notation describes a logical key chord as `(modifiers:`
 /// [winit::keyboard::ModifiersState][mods]`, key: `[winit::keyboard::Key][key]`)`.
 ///
+/// ```ignore
+/// keyseq_macros::winit_lkey! { Ctrl-W }
+/// ```
 /// [mods]: https://docs.rs/winit/latest/winit/keyboard/struct.ModifiersState.html
 /// [key]: https://docs.rs/winit/latest/winit/keyboard/enum.Key.html
 #[cfg(feature = "winit")]
@@ -167,8 +184,8 @@ pub fn winit_lkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 ///
 /// ```
 /// use keyseq_macros::poor_pkeyseq as keyseq;
-/// assert_eq!(keyseq!{ A B }, [(0, "A"), (0, "B")]);
-/// assert_eq!(keyseq!{ Shift-A Ctrl-B }, [(4, "A"), (1, "B")]);
+/// assert_eq!(keyseq! { A B }, [(0, "A"), (0, "B")]);
+/// assert_eq!(keyseq! { Shift-A Ctrl-B }, [(4, "A"), (1, "B")]);
 /// ```
 ///
 /// When no features are enabled, there are no smarts to check whether a key is real
@@ -176,7 +193,7 @@ pub fn winit_lkey(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 ///
 /// ```
 /// use keyseq_macros::poor_pkeyseq as keyseq;
-/// assert_eq!(keyseq!{ A NoSuchKey }, [(0, "A"), (0, "NoSuchKey")]);
+/// assert_eq!(keyseq! { A NoSuchKey }, [(0, "A"), (0, "NoSuchKey")]);
 /// ```
 ///
 #[cfg(feature = "poor")]
@@ -193,6 +210,10 @@ pub fn poor_lkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// Short hand notation describes a sequence of physical key chord as `[(modifiers:
 /// u8, key_code: &str)]`.
 ///
+/// ```
+/// assert_eq!(keyseq_macros::poor_pkeyseq! { Ctrl-W Alt-D Shift-S Super-A },
+///            [(1, "W"), (2, "D"), (4, "S"), (8, "A")]);
+/// ```
 /// [keycode]: https://docs.rs/bevy/latest/bevy/prelude/enum.KeyCode.html
 #[cfg(feature = "poor")]
 #[proc_macro_error]
@@ -205,8 +226,8 @@ pub fn poor_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     .into()
 }
 
-/// ```
-/// bevy_pkeyseq!{ Ctrl-W Ctrl-D Ctrl-S Ctrl-A }
+/// ```ignore
+/// keyseq_macros::bevy_pkeyseq! { Ctrl-W Ctrl-D Ctrl-S Ctrl-A }
 /// ```
 #[cfg(feature = "bevy")]
 #[proc_macro_error]
@@ -219,6 +240,9 @@ pub fn bevy_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     .into()
 }
 
+/// ```ignore
+/// keyseq_macros::bevy_lkeyseq! { Ctrl-W Ctrl-D Ctrl-S Ctrl-A }
+/// ```
 #[cfg(feature = "bevy")]
 #[proc_macro_error]
 #[proc_macro]
@@ -233,6 +257,9 @@ pub fn bevy_lkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// Short hand notation describes a sequence of physical key chord as `[(modifiers:`
 /// [winit::keyboard::ModifiersState][mods]`, key_code: `[winit::keyboard::KeyCode][keycode]`)]`.
 ///
+/// ```ignore
+/// keyseq_macros::winit_pkeyseq! { Ctrl-W Ctrl-D Ctrl-S Ctrl-A }
+/// ```
 /// [mods]: https://docs.rs/winit/latest/winit/keyboard/struct.ModifiersState.html
 /// [keycode]: https://docs.rs/winit/latest/winit/keyboard/enum.KeyCode.html
 #[cfg(feature = "winit")]
@@ -250,6 +277,9 @@ pub fn winit_pkeyseq(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 /// Short hand notation describes a sequence of logical key chord as `[(modifiers:`
 /// [winit::keyboard::ModifiersState][mods]`, key: `[winit::keyboard::Key][key]`)]`.
 ///
+/// ```ignore
+/// keyseq_macros::winit_lkeyseq! { Ctrl-W Ctrl-D Ctrl-S Ctrl-A }
+/// ```
 /// [mods]: https://docs.rs/winit/latest/winit/keyboard/struct.ModifiersState.html
 /// [key]: https://docs.rs/winit/latest/winit/keyboard/enum.Key.html
 #[cfg(feature = "winit")]
@@ -508,7 +538,7 @@ fn read_modifiers<F: Fn(u8) -> TokenStream>(
     (
         // r,
         to_modifiers(bitflags),
-        // quote!{ ::keyseq::Modifiers(#x) },
+        // quote! { ::keyseq::Modifiers(#x) },
         TokenStream::from_iter(last_tree.into_iter().chain(i)),
     )
 }
