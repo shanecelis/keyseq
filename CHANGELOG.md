@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## v0.4.1
+- Use curly braces for macros throughout code and documentation.
+
+- Add curly brace example code for macros for [better autocompletion] (https://github.com/not-elm/bevy-input-sequence/pull/10#issuecomment-2525100631).
+
 ## v0.4.0
 - Capitalize modifiers:`Ctrl-A` instead of `ctrl-A`.
 
