@@ -123,7 +123,7 @@ pub use keyseq_macros::bevy_pkeyseq as pkeyseq;
 /// ```compile_fail
 /// # use keyseq::{Modifiers, bevy::lkey};
 /// use bevy::input::keyboard::Key;
-/// assert_eq!(lkey!(Ctrl-Semicolon), (Modifiers::CONTROL, Key::Character(";".into())));
+/// assert_eq!(lkey!{ Ctrl-Semicolon }, (Modifiers::CONTROL, Key::Character(";".into())));
 /// ```
 pub use keyseq_macros::bevy_lkey as lkey;
 

@@ -10,12 +10,12 @@ use ::winit::keyboard::ModifiersState;
 /// use keyseq::{Modifiers, winit::lkey as key};
 /// use winit::keyboard::Key;
 ///
-/// assert_eq!(key!{ a },          (Modifiers::NONE,    Key::Character('a')));
-/// assert_eq!(key!{ Ctrl-a },     (Modifiers::CONTROL, Key::Character('a')));
-/// assert_eq!(key!{ Alt-a },      (Modifiers::ALT,     Key::Character('a')));
-/// assert_eq!(key!{ Shift-a },    (Modifiers::SHIFT,   Key::Character('a')));
-/// assert_eq!(key!{ Super-a },    (Modifiers::SUPER,   Key::Character('a')));
-/// assert_eq!(key!{ Ctrl-Alt-; }, (Modifiers::ALT |
+/// assert_eq!(key! { a },          (Modifiers::NONE,    Key::Character('a')));
+/// assert_eq!(key! { Ctrl-a },     (Modifiers::CONTROL, Key::Character('a')));
+/// assert_eq!(key! { Alt-a },      (Modifiers::ALT,     Key::Character('a')));
+/// assert_eq!(key! { Shift-a },    (Modifiers::SHIFT,   Key::Character('a')));
+/// assert_eq!(key! { Super-a },    (Modifiers::SUPER,   Key::Character('a')));
+/// assert_eq!(key! { Ctrl-Alt-; }, (Modifiers::ALT |
 ///                                 Modifiers::CONTROL, Key::Character(';')));
 /// ```
 ///
@@ -25,7 +25,7 @@ use ::winit::keyboard::ModifiersState;
 /// ```compile_fail
 /// # use keyseq::{Modifiers, winit::lkey};
 /// use winit::keyboard::Key;
-/// assert_eq!(lkey!(Ctrl-Semicolon), (Modifiers::CONTROL, Key::Character(';')));
+/// assert_eq!(lkey!{ Ctrl-Semicolon }, (Modifiers::CONTROL, Key::Character(';')));
 /// ```
 pub use keyseq_macros::winit_lkey as lkey;
 
@@ -42,7 +42,7 @@ pub use keyseq_macros::winit_lkeyseq as lkeyseq;
 /// ```
 /// use keyseq::{Modifiers, winit::pkey as pkey};
 /// use winit::keyboard::KeyCode;
-/// assert_eq!(pkey!(A), (Modifiers::NONE, KeyCode::KeyA));
+/// assert_eq!(pkey! { A }, (Modifiers::NONE, KeyCode::KeyA));
 /// ```
 pub use keyseq_macros::winit_pkey as pkey;
 /// Short hand notation describes a sequence of physical key chords as `[(modifiers:`
