@@ -170,6 +170,7 @@ match (modifiers.into(), key_code) {
 
     // And we can use the match-or to match multiple keychords.
     pkey! { Ctrl-A } | pkey! { Super-A } => println!("Just pressed Ctrl-A or Super-A!"),
+}
 ```
 
 In addition `keyseq::Modifiers` implements `From<ModifiersState>` and vice
