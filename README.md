@@ -253,10 +253,10 @@ cargo run --example bevy --features bevy
 
 ## Macro Notation 
 
-Although using parens will work `pkey!(Ctrl-Alt-A)`, rustfmt will add spaces
-around the hyphen changing it to `pkey!(Ctrl - Alt - A)`. Therefore, it's
-suggested to use curly braces `pkey! { Ctrl-Alt-A }` which are not reformatted
-like that.
+Although using parentheses will work `pkey!(Ctrl-Alt-A)`, `rustfmt` will add
+spaces around the hyphen changing it to `pkey!(Ctrl - Alt - A)` as will square
+brackets. Therefore, it is suggested to use curly braces `pkey! { Ctrl-Alt-A }`
+which are not reformatted like that.
 
 ## Compatibility
 
