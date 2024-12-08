@@ -1,6 +1,6 @@
 #[cfg(feature = "bevy")]
 mod for_bevy {
-    use ::bevy::{input::keyboard::Key, prelude::*};
+    use ::bevy::input::keyboard::{Key, KeyCode};
     use keyseq::{bevy::*, Modifiers};
 
     #[test]
