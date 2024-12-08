@@ -1,7 +1,7 @@
 [package]
 name = "keyseq_macros"
 description = "Specify key chords using `Ctrl-A` short-hand macros"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2021"
 authors = ["Shane Celis <shane.celis@gmail.com>"]
 keywords = [

@@ -206,12 +206,12 @@ With the "bevy" feature the `keyseq::bevy::lkey!` macro returns a
 use keyseq::{Modifiers, bevy::lkey as key};
 use bevy::input::keyboard::Key;
 
-assert_eq!(key!{ a },          (Modifiers::NONE,    Key::Character("a".into())));
-assert_eq!(key!{ Ctrl-a },     (Modifiers::CONTROL, Key::Character("a".into())));
-assert_eq!(key!{ Alt-a },      (Modifiers::ALT,     Key::Character("a".into())));
-assert_eq!(key!{ Shift-a },    (Modifiers::SHIFT,   Key::Character("a".into())));
-assert_eq!(key!{ Super-a },    (Modifiers::SUPER,   Key::Character("a".into())));
-assert_eq!(key!{ Ctrl-Alt-; }, (Modifiers::ALT |
+assert_eq!(key! { a },          (Modifiers::NONE,    Key::Character("a".into())));
+assert_eq!(key! { Ctrl-a },     (Modifiers::CONTROL, Key::Character("a".into())));
+assert_eq!(key! { Alt-a },      (Modifiers::ALT,     Key::Character("a".into())));
+assert_eq!(key! { Shift-a },    (Modifiers::SHIFT,   Key::Character("a".into())));
+assert_eq!(key! { Super-a },    (Modifiers::SUPER,   Key::Character("a".into())));
+assert_eq!(key! { Ctrl-Alt-; }, (Modifiers::ALT |
                                 Modifiers::CONTROL, Key::Character(";".into())));
 ```
 
@@ -262,8 +262,8 @@ like that.
 
 | keyseq | bevy   | winit  |
 | ------ | ------ | ------ |
-| 0.4.0  | 0.14.* | 0.30.* |
-| 0.3.0  | 0.14.* | 0.29.* |
+| 0.4.*  | 0.14.* | 0.30.* |
+| 0.3.*  | 0.14.* | 0.29.* |
 | 0.2.0  | 0.13.* | 0.29.* |
 | 0.1.0  | 0.12.* | 0.29.* |
 
