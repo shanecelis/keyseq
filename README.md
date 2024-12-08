@@ -47,7 +47,7 @@ With the "winit" feature the `keyseq::winit::pkey!` macro returns a
 
 ### Physical Keys
 
-```
+```rust
 use keyseq::{Modifiers, winit::pkey};
 use winit::keyboard::KeyCode;
 
@@ -62,7 +62,7 @@ assert_eq!(pkey! { Ctrl-Alt-; }, (Modifiers::ALT |
 
 ### Physical Key Sequences
 
-```
+```rust
 # use keyseq::Modifiers;
 # use winit::keyboard::KeyCode;
 use keyseq::winit::pkeyseq;
@@ -75,7 +75,7 @@ assert_eq!(pkeyseq! { A Ctrl-B }, [(Modifiers::NONE,    KeyCode::KeyA),
 With the "winit" feature the `keyseq::winit::lkey!` macro returns a
 `(Modifiers, Key)` tuple.
 
-```
+```rust
 use keyseq::{Modifiers, winit::lkey};
 use winit::keyboard::Key;
 
@@ -89,7 +89,7 @@ assert_eq!(lkey! { Ctrl-Alt-; }, (Modifiers::ALT |
 ```
 
 ### Logical Key Sequences
-```
+```rust
 # use keyseq::Modifiers;
 # use winit::keyboard::Key;
 use keyseq::winit::lkeyseq;
@@ -102,7 +102,7 @@ assert_eq!(lkeyseq! { a Ctrl-b }, [(Modifiers::NONE,    Key::Character('a')),
 The following code will fail to compile. It insists on a capital 'A' for
 specifying the A key.
 
-```compile_fail
+```rust compile_fail
 # use keyseq::winit::pkey;
 let (mods, key) = pkey! { a }; // error: Use uppercase key names for physical keys
 ```
@@ -112,7 +112,7 @@ let (mods, key) = pkey! { a }; // error: Use uppercase key names for physical ke
 With the "strict-order" feature enabled by default, modifiers out of order will
 produce compiler errors. Without the feature, it will emit warnings.
 
-```compile_fail
+```rust compile_fail
 # use keyseq::winit::pkey;
 let _ = pkey! { Alt-Ctrl-A }; // error: Modifiers must occur in this order: control, Alt, Shift, Super.
 ```
@@ -125,7 +125,7 @@ the [bitflags](https://docs.rs/bitflags/latest/bitflags/) crate. Originally this
 crate did return `winit`'s native modifiers struct because it desugared to nearly
 the same thing:
 
-```ignore
+```rust ignore
 // keyseq::winit::pkey! { Ctrl-Alt-A } desugared to
 ( ModifiersState::CONTROL 
 | ModifiersState::ALT 
@@ -140,7 +140,7 @@ the same thing:
 However, this these bitflags put together with bit-or pipes had a problem with
 match expressions.
 
-```ignore
+```rust ignore
 fn f(modifiers: ModifiersState) {
     match (modifiers.into(), key_code) {
         // pkey! { Ctrl-Alt-A }    => println!("Just pressed Ctrl-Alt-A!"),
@@ -162,7 +162,7 @@ To avoid this problem `keyseq::Modifiers` is defined as `Modifiers(pub u8)` and
 the bitflags are computed in the macro. That allows the following match
 expressions to work as expected.
 
-```ignore
+```rust ignore
 match (modifiers.into(), key_code) {
     // pkey! { Ctrl-Alt-A }              => println!("Just pressed Ctrl-Alt-A!"),
     // now desugars to
@@ -185,7 +185,7 @@ With the "bevy" feature the `keyseq::bevy::pkey!` macro returns a
 Bevy doesn't have a logical key representation so there are no `lkey!` and
 `lkeyseq!` macros.
 
-```
+```rust
 use bevy::prelude::KeyCode;
 use keyseq::{Modifiers, bevy::pkey};
 assert_eq!(pkey! { Ctrl-A },    (Modifiers::CONTROL, KeyCode::KeyA));
@@ -202,7 +202,7 @@ assert_eq!(pkey! { Ctrl-Shift-A },
 With the "bevy" feature the `keyseq::bevy::lkey!` macro returns a
 `(Modifiers, Key)` tuple.
 
-```
+```rust
 use keyseq::{Modifiers, bevy::lkey as key};
 use bevy::input::keyboard::Key;
 
@@ -216,7 +216,7 @@ assert_eq!(key! { Ctrl-Alt-; }, (Modifiers::ALT |
 ```
 
 ### Logical Key Sequences
-```
+```rust
 # use keyseq::Modifiers;
 # use bevy::input::keyboard::Key;
 use keyseq::bevy::lkeyseq;
