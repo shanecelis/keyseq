@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## v0.5.0
+- Update to bevy 0.15.
+
 ## v0.4.1
 - Use curly braces for macros throughout code and documentation.
 
