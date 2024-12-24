@@ -25,7 +25,7 @@ use ::winit::keyboard::ModifiersState;
 /// ```compile_fail
 /// # use keyseq::{Modifiers, winit::lkey};
 /// use winit::keyboard::Key;
-/// assert_eq!(lkey!{ Ctrl-Semicolon }, (Modifiers::CONTROL, Key::Character(';')));
+/// assert_eq!(lkey! { Ctrl-Semicolon }, (Modifiers::CONTROL, Key::Character(';')));
 /// ```
 pub use keyseq_macros::winit_lkey as lkey;
 
