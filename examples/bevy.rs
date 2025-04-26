@@ -48,7 +48,7 @@ fn setup(
         Mesh3d(meshes.add(Cuboid::default())),
         MeshMaterial3d(materials.add(Color::srgb_u8(124, 144, 255))),
         Transform::from_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2)),
-        ));
+    ));
 
     // light
     commands.spawn((
@@ -58,9 +58,10 @@ fn setup(
             ..default()
         },
         Transform::from_xyz(4.0, 8.0, 4.0),
-        ));
+    ));
     // camera
-    commands.spawn((Camera3d::default(),
+    commands.spawn((
+        Camera3d::default(),
         Transform::from_xyz(-2.5, 4.5, 9.0).looking_at(Vec3::ZERO, Vec3::Y),
     ));
 }
