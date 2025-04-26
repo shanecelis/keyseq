@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/keyseq/0.5.0")]
+#![doc(html_root_url = "https://docs.rs/keyseq/0.6.0")]
 // The README is written with code that requires both winit and bevy features.
 #![cfg_attr(all(feature = "winit", feature = "bevy"),
             doc = include_str!("../README.md"))]
@@ -39,7 +39,8 @@ pub mod poor {
 //! ```
 //!
 //! These particular representations are impractical since one would need to
-//! interrogate untyped bitflags and string. The real use case requires features.
+//! interrogate untyped bitflags and a string. The real use case requires
+//! features.
     pub use keyseq_macros::{poor_lkey as lkey,
                             poor_lkeyseq as lkeyseq,
                             poor_pkey as pkey,
