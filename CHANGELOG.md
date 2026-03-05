@@ -4,8 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## v0.8.0
+- Update to Bevy 0.18.
+- Bind macro to `_keyseq::Modifiers` instead of `::keyseq::Modifiers` so keyseq
+
+  can be re-exported.
+
+## v0.7.0
+- Update to Bevy 0.17.
+
+## v0.6.0
+- Update to Bevy 0.16.
+
 ## v0.5.0
-- Update to bevy 0.15.
+- Update to Bevy 0.15.
 
 ## v0.4.1
 - Use curly braces for macros throughout code and documentation.
@@ -28,16 +40,16 @@ The majority of hotkey notations use plus, so I bend to their use.
 - Update to winit 0.30.
 
 ## v0.3.0
-- Update to bevy 0.14.
+- Update to Bevy 0.14.
 
 ## v0.2.3
 
 - Implement Display for Modifiers.
-- Derive Reflect for Modifiers when "bevy" feature is present.
+- Derive Reflect for Modifiers when "Bevy" feature is present.
 
 ## v0.2.2
 
-- Update to bevy 0.13.
+- Update to Bevy 0.13.
 
 ## v0.2.1
 
@@ -49,7 +61,7 @@ The majority of hotkey notations use plus, so I bend to their use.
 
 ### Features
 
-- Add support for bevy 0.13.
+- Add support for Bevy 0.13.
 
 ## v0.1.1
 
