@@ -57,15 +57,20 @@ bitflags! {
     impl Modifiers: u8 {
         /// Represents no modifier keys.
         const NONE    = 0b00000000;
-        /// Represents the control key, left or right.
+        /// Represents the Control key, left or right.
         const CONTROL = 0b00000001;
         /// Represents the Alt key, left or right.
         const ALT     = 0b00000010;
         /// Represents the Shift key, left or right.
         const SHIFT   = 0b00000100;
-        /// Represents the macOS command or Windows key, left or right.
+        /// Represents the macOS Command or Windows key, left or right.
         const SUPER   = 0b00001000;
     }
+}
+
+#[doc(hidden)]
+pub mod _keyseq {
+    pub use super::Modifiers;
 }
 
 impl fmt::Debug for Modifiers {
