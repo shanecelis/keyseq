@@ -412,7 +412,7 @@ impl Modifier {
 #[allow(dead_code)]
 fn to_keyseq_modifiers(bitflags: u8) -> TokenStream {
     let x = proc_macro2::Literal::u8_suffixed(bitflags);
-    quote! { ::keyseq::Modifiers(#x) }
+    quote! { _keyseq::Modifiers(#x) }
 }
 
 #[cfg(feature = "poor")]
