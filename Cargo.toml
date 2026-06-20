@@ -32,13 +32,13 @@ permit-plus = ["keyseq_macros/permit-plus"]
 
 [dependencies]
 keyseq_macros = { version = "0.4.0", path = "macros" }
-bevy = { version = "0.18", default-features = false, optional = true }
-bevy_reflect = { version = "0.18", optional = true }
+bevy = { version = "0.19", default-features = false, optional = true }
+bevy_reflect = { version = "0.19", optional = true }
 winit = { version = "0.30", default-features = false, optional = true }
 bitflags = "2.9"
 
 [dev-dependencies]
-bevy = { version = "0.18", default-features = true }
+bevy = { version = "0.19", default-features = true }
 version-sync = "0.9"
 
 [[example]]
