@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## v0.10.0
+- Update to Bevy 0.20.
+
+## v0.9.0
+- Update to Bevy 0.19.
+
 ## v0.8.0
 - Update to Bevy 0.18.
 - Bind macro to `_keyseq::Modifiers` instead of `::keyseq::Modifiers` so keyseq
